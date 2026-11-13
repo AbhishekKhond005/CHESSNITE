@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Chess } from 'chess.js';
 import { ArrowRight, ArrowLeft, BookOpen, Check, ChevronRight, CircleHelp, Download, Flag, FolderOpen, GraduationCap, History, LayoutGrid, Lightbulb, LockKeyhole, Palette, Play, RefreshCw, RotateCcw, Settings, ShieldCheck, Sparkles, Swords, Target, Trophy, Upload, Volume2, X } from 'lucide-react';
 import Board, { palettes } from './Board.jsx';
+import BotView from './BotView.jsx';
 import { lessons, units, nextLesson, unitAvailable, dueReviews, recordResult, isCheckpoint } from './course.js';
 import { downloadJSON, request, useWorkspace } from './workspace.js';
 
@@ -134,5 +135,4 @@ function SettingsView({ data, change, setMessage }) {
 
 function PageTitle({ eyebrow, title, subtitle }) { return <div className="page-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{subtitle}</p></div></div>; }
 // Added in the next milestone, preserving a buildable course/persistence foundation.
-function BotView() { return <div className="empty-state"><Swords size={34}/><h1>Robin’s room</h1><p>The calculating opponent is the next build milestone.</p></div>; }
 function UpdatePanel() { return null; }

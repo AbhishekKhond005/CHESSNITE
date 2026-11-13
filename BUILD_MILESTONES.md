@@ -10,6 +10,8 @@ The active implementation scope follows the user's latest instruction: one Londo
 
 Milestone 1: course/rules checks and SQLite persistence/concurrency tests pass; production UI build succeeds. Runtime bot and standalone launch/update are the next milestones.
 
+Milestone 2: real Stockfish WASM play passes browser checks for both colors, game resume, undo, lesson resume/completion, saved skins, and a 390px mobile viewport. The five course/engine unit checks and two storage tests also pass. Standalone launch/update is next.
+
 Push each verified milestone to `main`. Source changes require Node to build; running a shipped build requires only Python 3.10+ and a current browser. Personal data lives in `.local/chessnite.sqlite3`, is ignored by Git, and survives app updates.
 
 ## Architectural boundaries

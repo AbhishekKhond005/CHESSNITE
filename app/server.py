@@ -69,6 +69,8 @@ class Handler(BaseHTTPRequestHandler):
         content_type = mimetypes.guess_type(target.name)[0] or "application/octet-stream"
         if target.suffix == ".js":
             content_type = "application/javascript"
+        if target.suffix == ".wasm":
+            content_type = "application/wasm"
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "public, max-age=31536000, immutable" if path.startswith("/assets/") else "no-cache")
@@ -96,4 +98,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    AppServer().serve_forever()
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--port', type=int, default=PORT)
+    parser.add_argument('--data-path')
+    args = parser.parse_args()
+    AppServer(args.port, args.data_path).serve_forever()
