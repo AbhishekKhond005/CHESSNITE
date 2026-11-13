@@ -1,0 +1,4 @@
+Stockfish.js 19.0.1, unmodified lite single-threaded build.
+GPL-3.0.
+Corresponding source: https://github.com/nmrugg/stockfish.js/tree/v19.0.1
+Package: https://www.npmjs.com/package/stockfish/v/19.0.1

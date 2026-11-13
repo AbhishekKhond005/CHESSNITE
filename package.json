@@ -1,0 +1,22 @@
+{
+  "name": "chessnite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "node scripts/build.mjs",
+    "test": "node --test web/tests/*.test.js",
+    "test:browser": "playwright test"
+  },
+  "dependencies": {
+    "@playwright/test": "1.65.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "chess.js": "1.4.0",
+    "lucide-react": "1.72.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "stockfish": "19.0.1",
+    "vite": "8.3.8"
+  }
+}

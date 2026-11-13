@@ -1,6 +1,6 @@
 # CHESSNITE — Product Requirements and Development Plan
 
-Version: 1.4  
+Version: 1.5  
 Created: 2026-11-13  
 Last updated: 2026-11-13  
 Status: Main application in planning; standalone skin and sound importer implemented on explicit request. This document alone does not authorize further implementation.  
@@ -9,6 +9,8 @@ Purpose: A living specification that can be expanded as new requirements are req
 ## 1. Product vision
 
 Build a chess platform inspired by the convenience of Chess.com, centered on a personal opening compendium. Users should be able to discover openings, understand their ideas, organize their own variations, replay notation on a board, practice from any position, and play real engine-driven opponents with customizable visuals.
+
+Include a guided learning roadmap inspired by the approachable progression of Duolingo and chess learning platforms: clear levels, short interactive lessons, checkpoints, scheduled review, and a useful next step. The personal compendium and guided curriculum must work together.
 
 The defining workflow is:
 
@@ -33,7 +35,7 @@ Use original branding, interface design, and licensed or original assets. Chess.
 - Initial audience: an individual studying and managing their own repertoire. Private personal data is the default.
 - Delivery target: a responsive web experience for desktop and mobile browsers. Final stack and hosting choices remain open.
 - Existing Java project files do not commit the platform to a Java-only architecture.
-- A usable first release includes all four pillars. Later phases deepen training, content, and optional social features.
+- A usable first release includes all four pillars plus a guided learning path through the reviewed starter opening curriculum. Later phases expand the curriculum, personalization, and optional social features.
 - Human matchmaking, tournaments, chat, payments, and a public social feed are outside the initial release.
 - No subscriptions or paid cosmetic economy are assumed. Required external data integrations are Chess.com's daily puzzle and Lichess opening data. Lichess API authentication is required for live explorer access; this is separate from introducing CHESSNITE user accounts.
 - “All openings and their lines” means broad coverage of named standard openings, with an expandable collection of documented variations. It does not mean enumerating every legal continuation: opening theory evolves and branches indefinitely.
@@ -57,6 +59,7 @@ Requirement IDs are permanent. Future edits should preserve IDs and record chang
 5. **Personalize the workspace:** Preview a board and piece combination, save it as a preset, and use it consistently in study, replay, and play screens.
 6. **Solve today's puzzle:** Open the Chess.com daily puzzle from Home, solve it without seeing the solution, review it, and retain the local attempt record.
 7. **Start with a prepared opening collection:** Browse the selected White and Black opening packs, fetch Lichess continuations, and copy useful lines into a personal repertoire.
+8. **Follow a learning roadmap:** Choose an experience level and preferred side, see the recommended next lesson on a visual path, complete a short lesson and recall drill, pass a checkpoint, and return for scheduled review. Open the associated study or play its position against a bot at any point.
 
 ## 4. Opening compendium and learning material
 
@@ -251,13 +254,13 @@ Cosmetics are visual preferences. They must not alter game state, training corre
 
 | ID | Priority | Requirement |
 | --- | --- | --- |
-| LEARN-001 | P1 | Practice a selected line, opening, folder, or repertoire as either side; the system supplies opponent moves from selected branches. |
-| LEARN-002 | P1 | Support guided learning, recall without hints, and randomized branch practice. |
-| LEARN-003 | P1 | Compare a submitted move with configured accepted study continuations. Distinguish “not in this repertoire” from “illegal” or “objectively bad.” |
-| LEARN-004 | P1 | On a mistake, show the expected continuation and attached explanation, with reveal, retry, or continue controls. |
-| LEARN-005 | P1 | Schedule spaced reviews using attempts, errors, hints, and elapsed time. Allow manual rescheduling, pausing, and resetting a line. |
-| LEARN-006 | P1 | Track progress by side, line, position, and repertoire; show due reviews, common errors, and recently neglected material. |
-| LEARN-007 | P1 | Reconcile training records when lines change: retain unaffected progress and flag changed continuations for review. |
+| LEARN-001 | P0 | Practice a selected line, opening, folder, or repertoire as either side; the system supplies opponent moves from selected branches. |
+| LEARN-002 | P0 | Support guided learning, recall without hints, and randomized branch practice. |
+| LEARN-003 | P0 | Compare a submitted move with configured accepted study continuations. Distinguish “not in this repertoire” from “illegal” or “objectively bad.” |
+| LEARN-004 | P0 | On a mistake, show the expected continuation and attached explanation, with reveal, retry, or continue controls. |
+| LEARN-005 | P0 | Schedule spaced reviews using attempts, errors, hints, and elapsed time. Allow manual rescheduling, pausing, and resetting a line. |
+| LEARN-006 | P0 | Track progress by side, line, position, and repertoire; show due reviews, common errors, and recently neglected material. |
+| LEARN-007 | P0 | Reconcile training records when lines change: retain unaffected progress and flag changed continuations for review. |
 | LEARN-008 | P2 | Generate exercises from recurring mistakes and suggest which repertoire gaps to study next. |
 
 Training follows the user's learning objective. If several moves are acceptable, authors must be able to accept multiple continuations. Engine agreement alone must not silently rewrite a repertoire answer.
@@ -287,6 +290,88 @@ Integration behavior:
 - The UI hides solution data for learning convenience; the public payload contains the solution. This feature does not create a secure competitive puzzle rating.
 - Use the shared integration request queue and bounded retry behavior from section 4.2. Determine whether direct browser requests or a backend fetch/cache best fit provider headers and the deployment design during implementation.
 
+### 8.2. Guided learner roadmap — required product feature
+
+This is the roadmap a learner follows inside CHESSNITE. Section 15 separately describes the software delivery plan. The learning path is a core experience, with original visual design and original or licensed lessons.
+
+#### Path structure and navigation
+
+Use **track → level → unit → lesson → exercise**, with a checkpoint at the end of each unit. Tracks include Foundations, White Repertoire, Black Repertoire, and My Repertoire. The personal track starts as a view of selected published units and saved study lines; custom course authoring follows in P1.
+
+| ID | Priority | Requirement |
+| --- | --- | --- |
+| PATH-001 | P0 | On first use, ask for experience level, preferred side, opening interests, and a flexible 5/10/15-minute daily target. Allow skipping onboarding and changing choices later. |
+| PATH-002 | P0 | Show a visual learning path with named levels, ordered lesson nodes, prerequisites, checkpoints, progress, and a prominent Continue action. Offer an equivalent accessible list view. |
+| PATH-003 | P0 | Distinguish not started, available, in progress, completed, checkpoint passed, mastered, and review due. Mark unpublished content separately as coming soon, not as a locked achievement. |
+| PATH-004 | P0 | Publish short interactive lessons with a stated objective, an estimated 3–7-minute duration, explanations, board exercises, recall, and a recap. Allow pausing and resuming at the exact exercise. |
+| PATH-005 | P0 | End each opening unit with a checkpoint that tests move recall, an opponent alternative, a typical mistake, and a strategic idea using reviewed exercises. Show the pass criteria and explain failures. |
+| PATH-006 | P0 | Unlock the next recommended unit when prerequisites and its checkpoint criteria are met. Keep the catalog, personal compendium, and free bot play accessible regardless of path progress. Allow browsing future lesson objectives. |
+| PATH-007 | P0 | Turn each reviewed opening study into a linked learning unit, including relevant branches and side-specific explanations. A raw API line alone cannot be labeled a reviewed lesson. |
+| PATH-008 | P0 | Connect lessons to Open in compendium, Practice this line, and Play from here against a bot. Store discoveries back in the user's study without rewriting the published lesson. |
+| PATH-009 | P0 | Provide a review queue and a daily session combining due review, one suitable new lesson, and an optional application exercise within the chosen time budget. Explain why the next activity is recommended. |
+| PATH-010 | P0 | Distinguish lesson completion from retained mastery. Hints, reveals, errors, elapsed time, and delayed recall must affect progress as defined below. |
+| PATH-011 | P0 | Show side-specific progress, units passed, skills needing review, and actual published content coverage. Completing one path must not imply mastery of all chess or all 30 opening entries. |
+| PATH-012 | P0 | Persist and back up enrollments, attempts, current lesson/exercise, checkpoint results, review dates, and curriculum versions. Curriculum edits must not erase unrelated progress. |
+| PATH-013 | P1 | Offer an optional placement assessment and unit test-out for experienced players. Mark passed objectives accurately; skipping explanations must not manufacture delayed-recall mastery. |
+| PATH-014 | P1 | Adapt lesson selection and difficulty using observed mistakes and successful recall. Initially use explainable rules; users can override the suggested track or study order. |
+| PATH-015 | P1 | Let users create an ordered learning path from their own studies, with selectable branches, accepted moves, objectives, and checkpoints. Label unreviewed personal content accordingly. |
+| PATH-016 | P1 | Add optional XP, badges, daily goals, and streaks. Keep these separate from mastery and any chess rating; users can hide them or pause reminders. No lives/hearts system may block study after mistakes. |
+| PATH-017 | P0 | Make prerequisites and next-step selection deterministic and explainable. Validate prerequisite graphs for cycles and missing published dependencies before releasing a curriculum. |
+| PATH-018 | P0 | A puzzle API outage, missing explorer credentials, or an unavailable bot must not block cached lessons, completed progress, or review. Offer a suitable lesson exercise when an optional application activity is unavailable. |
+
+#### Curriculum progression
+
+Levels describe skills and increasing independence, not promised Elo bands. The path can branch and learners can select a repertoire suited to their interests. Do not force users to finish all 15 White openings before studying Black, or all 30 entries before advancing.
+
+| Level | Learning goal | Representative units and activities | Delivery scope |
+| --- | --- | --- | --- |
+| 0 — Chess foundations | Navigate the board, make legal moves, and read notation. | Piece movement, captures, check, castling, promotion, and short SAN replays. | Expanded Foundations track in P1; launch includes a concise board/notation orientation and a skip option. |
+| 1 — Opening essentials | Understand the reason for an opening move. | Center control, development, king safety, and recognizing premature pawn/queen moves; four short reviewed launch lessons. | P0. |
+| 2 — First White repertoire | Learn one main setup and its key opponent replies. | Choose Italian, Ruy Lopez, Scotch, Queen's Gambit, London, or English from the reviewed White units; start with one, explore others as electives. | P0 starter units; expand to W01–W15 as teaching content is reviewed. |
+| 3 — First Black repertoire | Prepare responses to common opening starts. | Choose a reviewed defense against `1. e4` and one against `1. d4`, using Sicilian, French, Caro-Kann, QGD, King's Indian, or Nimzo-Indian units as appropriate. Identify uncovered opponent move orders explicitly. | P0 starter units; expand to B01–B15 as teaching content is reviewed. |
+| 4 — Branches and move orders | Handle deviations rather than repeating a single line. | Important alternatives, transpositions, anti-systems, move-order traps, and finding repertoire gaps. | P0: at least three reviewed branches in every launch opening unit; P1: broader transposition and gap tools. |
+| 5 — Plans after the opening | Choose moves when memorized theory ends. | Typical pawn structures, tactical motifs, piece plans, and relevant endgame transitions, using positions from selected openings. | P0: strategic ideas and common mistakes in starter units; P1: dedicated structure, tactics, and endgame units. |
+| 6 — Apply and analyze | Transfer study into practical games and learn from mistakes. | Play a bot from a lesson position, compare with the prepared line, and save notes; later add automated review and targeted opening sparring. | P0 manual study/play loop; P1 deeper review and sparring. |
+| 7 — Maintain a personal repertoire | Study independently and retain useful knowledge. | Delayed recall, mixed branch checkpoints, regular gap reviews, and learner-authored paths. | P0 review and retention loop; P1 authored paths and adaptive recommendations. |
+
+White and Black are parallel tracks: after Opening Essentials, either can be started or alternated. Within an opening, the teaching order is **ideas → main line → common alternatives → mistakes → plans → checkpoint → practical play → delayed review**. Foundations beyond the launch orientation are an optional prerequisite recommendation until those lessons are published.
+
+Launch content minimum: the four Opening Essentials lessons, the board/notation orientation, and 12 reviewed opening units corresponding to the studies named in section 4. Each opening unit has at least an ideas lesson, a main-line lesson, a branch/mistake lesson, a recall exercise set, and a checkpoint. Each must expose at least three relevant branches. Publish a content manifest linking unit, lesson, exercise, source study, learner side, prerequisite, and review status. Catalog-only entries remain usable for self-study but do not appear as completable authored lessons.
+
+#### A typical lesson and daily session
+
+Example Italian Game unit:
+
+1. Show the objective: develop pieces and understand the role of `Bc4`.
+2. Demonstrate the main line with brief explanations on the board.
+3. Ask the learner to make selected moves without visible answers.
+4. Introduce Giuoco Piano, Two Knights, and Evans Gambit branches in separate exercises with the correct starting move orders.
+5. Test a common mistake and a positional idea with reviewed feedback.
+6. Run the unit checkpoint, then offer a bot game from one of the studied positions.
+7. Save weak decisions to the review queue and show the next useful step.
+
+A 10-minute session might allocate three minutes to due review, five to a lesson, and two to a short application exercise. These are estimates, not a timer that cuts off play. A full bot game remains optional and can continue beyond the target. Allow review-only sessions, stopping early, and resuming later. Completing the Chess.com daily puzzle can count toward an optional activity goal; it must not confer opening mastery unless its reviewed objectives actually match.
+
+#### Completion, checkpoints, mastery, and review rules
+
+These are initial product defaults to validate with learners, not claims of scientifically optimal thresholds. Version the policy so subsequent tuning preserves the meaning of earlier results.
+
+- **Lesson completed:** All required exercises were attempted and the recap reached. Record whether hints or reveals were used. Showing a solution cannot count as unaided success.
+- **Checkpoint passed:** At least 80% first-attempt accuracy on a minimum of 10 scored decisions, covering every required skill and selected branch category. Score all required decisions, including wrong/skipped answers, in the denominator. Requesting a hint or reveal switches the attempt to practice; an assisted attempt cannot award a checkpoint pass. Accept every configured valid answer; free text answers require reviewed rubrics or constrained answer choices.
+- **Checkpoint retry:** Explain missed concepts, offer targeted practice, and allow retry immediately without a lives limit. Vary reviewed positions/order where content permits and retain attempt history. Repeating a just-revealed answer is practice, not delayed recall evidence.
+- **Unit mastered:** Pass the checkpoint, then pass two unaided review sessions at the same accuracy threshold on different dates, at least 24 hours after the checkpoint and at least 24 hours apart. A progress badge must distinguish passed from mastered.
+- **Review schedule:** Begin with intervals of 1, 3, 7, 14, and 30 days after successive successful reviews. A wrong answer or any hint/reveal returns the affected skill to a one-day interval and offers immediate practice. Do not reset unrelated units.
+- **Review due:** Indicates a scheduled retention check, not automatic loss of previously earned completion. Display mastery together with current review status; overdue lessons stay open.
+- **Daily goal:** Count genuine learning/review activity and completion, not merely opening a page. XP and streak rewards, when added, use stable activity IDs to prevent duplicate awards on refresh, restore, or retry. They never unlock engine strength or replace skill assessment.
+- **Dates and recovery:** Store attempt timestamps in UTC and a learner timezone for day-based goals. Document day boundaries and timezone-change behavior; changing timezone or restoring a backup must not duplicate rewards or move a review arbitrarily into the future.
+- **Content changes:** Keep the learner's completed history tied to its curriculum version. A changed answer/line can mark the affected skill for reassessment while leaving unrelated progress intact. Deprecated units remain visible in history with a link to their replacement.
+
+#### Access and motivation
+
+The guided path recommends a sequence; direct compendium access remains available for exploration and tournament preparation. Users can change side, pause a track, select a different opening, or practice an advanced position. Optional placement or checkpoint test-out can satisfy a prerequisite when implemented. Every gated node should explain exactly what to complete and offer a useful available alternative. Draft lessons and unavailable integrations must never create a dead end in the published path.
+
+Use supportive feedback, optional celebrations respecting reduced motion and mute settings, and a clear Next action. Allow mistakes without blocking practice, avoid shame-based streak messaging, and keep reminders opt-in. Completing a bot game is useful practice; winning it is not a prerequisite for passing an opening unit.
+
 ## 9. Quality-of-life features
 
 ### Included in the first release
@@ -307,20 +392,22 @@ Integration behavior:
 - **QOL-011 / P1:** Study revision history with named snapshots and restore previews.
 - **QOL-012 / P1:** Offline access to previously downloaded studies, with queued edits and explicit synchronization state.
 - **QOL-013 / P1:** Repertoire coverage map and filters for draft, ready, learning, due, and mastered material.
-- **QOL-014 / P2:** Optional reminders and flexible study goals; no mandatory streak mechanics.
+- **QOL-014:** Flexible daily study targets are P0 through PATH-001/009. Optional reminders and opt-in streak features are P1 through PATH-016; no mandatory streak mechanics.
 - **QOL-015 / P2:** Multiple named workspaces, such as tournament preparation and casual exploration.
 
 ## 10. Screens and navigation
 
 | Screen | Main contents and actions |
 | --- | --- |
-| Home | Resume last activity, Chess.com Puzzle of the Day with attribution and date, recent studies, favorites, and review queue when training ships. |
+| Home | Continue recommended lesson, due reviews, daily study target, Chess.com Puzzle of the Day with attribution and date, recent studies, and favorites. |
+| Learning path | Experience/side selection, track switcher, visual level/unit/lesson map, accessible list view, prerequisites, checkpoints, mastery/review states, and Next action. |
+| Guided lesson / checkpoint | Objective, short explanation, interactive board decisions, hints where allowed, saved exercise position, assessment feedback, recap, and compendium/bot links. |
 | Opening catalog | Search, family filters, selected White/Black packs, Lichess continuations and statistics, fetch status, coverage status, and create-study action. |
 | My compendium | Collections, folders, tags, sorting, search, import/export, and archived studies. |
 | Study workspace | Board, branching move list, annotations, learning material, save state, and play-from-here action. |
 | Notation workspace | Paste/upload notation, select starting position, validation preview, replay, and save/export. |
 | Bot setup and game | Side, difficulty, start position, game controls, move list, and post-game save. |
-| Training | Scope selection, recall board, feedback, and session results. P1. |
+| Training and review | Scope selection, due queue, recall board, feedback, session results, and scheduled next review. P0 foundation; P1 adaptive recommendations. |
 | Daily puzzle | Interactive board, attempt controls, hidden solution, hints/reveal, completion status, source credit, and publication date. |
 | Appearance | Theme and piece previews, presets, accessibility options, and reset. |
 | Settings and data | Preferences, storage status, backup/restore, integration connection/refresh status, and account controls if accounts are introduced. |
@@ -344,6 +431,11 @@ These are conceptual entities, not a mandated database schema.
 | Bot profile | Engine identity and settings, difficulty preset, optional style and repertoire policy. |
 | Analysis | Position, engine version/settings, effort, evaluation, candidate lines, and calculation date. |
 | Training record | Study revision, side, target move or position, attempts, mistakes, and next review. |
+| Curriculum / track | Stable track ID, published version, levels, objectives, learner-side scope, and prerequisite graph. |
+| Unit / lesson / exercise | Stable content ID and revision, ordered activities, reviewed answers/rubric, linked study/branches, checkpoints, estimated duration, and publication state. |
+| Learner enrollment / path progress | Selected tracks, onboarding choices, goals, current activity, prerequisite results, completion/mastery states, and curriculum version. |
+| Assessment / review attempt | Unit/skill/exercise version, submitted decisions, first-attempt score, hints/reveals, timestamps, scheduling policy version, and next due date. |
+| Optional motivation ledger | Stable learning-activity IDs, goal timezone, XP/badge/streak events, and reminder preferences; distinct from mastery and chess rating. P1. |
 | Theme preset | Board, pieces, interface mode, highlights, sound, and motion preferences. |
 | Opening pack entry | Stable W/B ID, learner side, seed line, catalog reference, variation targets, enrichment state, and optional linked personal study. |
 | Explorer snapshot | Provider/database, canonical query and filters, retrieved time, move counts, game references, and cache/version metadata. |
@@ -363,6 +455,7 @@ Integrity rules:
 8. A restore operation validates the backup and offers merge or replace with a reviewable summary. Never silently discard existing data.
 9. Remote content updates are transactional: validate a replacement snapshot before publishing it. Keep personal studies and puzzle attempt records independent from cache expiry or provider refreshes.
 10. Full-library backups include puzzle attempts and source identifiers plus user-saved opening lines. Exclude credentials and replaceable bulk response caches; preserve provenance for all retained remote content.
+11. Include learner enrollment, curriculum references, assessment history, review schedules, and current lesson position in complete backups. Version curriculum and scoring/scheduling policies separately from study revisions; never silently mark a changed exercise as previously mastered.
 
 ## 12. Logical architecture and technical decisions
 
@@ -372,7 +465,7 @@ Keep the product modular without committing to a framework yet:
 - **Board and replay interface:** Renders state, accepts moves, and navigates variations; it does not invent a separate rules implementation.
 - **Compendium and content layer:** Catalog import, personal studies, organization, learning pages, and search.
 - **Engine adapter:** Position-in/move-or-analysis-out boundary, job IDs, cancellation, settings, and error handling.
-- **Training layer:** Accepted continuations, feedback, scheduling, and progress.
+- **Training and curriculum layer:** Versioned tracks, prerequisite validation, accepted continuations, lesson/checkpoint delivery, assessment, scheduling, saved progress, and explainable next-activity selection.
 - **Persistence layer:** Autosave, complete backups, schema migrations, and optional future synchronization.
 - **Theme layer:** Shared visual tokens, board palettes, piece assets, and accessibility preferences.
 - **External data adapters:** Chess.com daily-puzzle fetch and Lichess catalog/explorer access, with authentication where required, validation, request queues, caching, refresh state, and source attribution.
@@ -429,6 +522,10 @@ These are future implementation checks, not tests to create during this planning
 12. **Handle puzzle failures and dates:** Exercise malformed PGN/FEN, timeout, 429, cached responses, a local midnight rollover, and no-cache offline startup. Show the last valid publication as stale when appropriate; never label it as a newly fetched puzzle or invent a solution.
 13. **Populate both opening packs:** Verify exactly W01–W15 and B01–B15, legal seed moves, catalog matches/aliases, correct branch roots, and at least three targeted variations per entry. Fetch live continuation snapshots where credentials and source data permit. Empty responses remain clearly labeled gaps rather than fabricated content.
 14. **Refresh Lichess data safely:** Verify documented authentication, database/filter-specific caching, sample counts, 401/403 reconnect behavior, 429 backoff, bounded traversal, pause/resume, and deduplication. A refresh cannot overwrite a personal study or duplicate a branch. Cached packs remain usable offline; missing live authentication is visible and is not counted as a successful enrichment.
+15. **Follow the learner roadmap:** Onboard a beginner and an experienced learner; choose either side, find a suitable published unit, complete a lesson, resume after reload, take a checkpoint, and see an explained next step. Check accessible list navigation and free compendium access from a gated node.
+16. **Assess honestly:** For a 10-decision checkpoint, eight unaided correct first attempts pass, seven fail, and hinted/revealed answers cannot count as unaided successes. Verify configured alternatives, skill/branch coverage, repeat attempts, and supportive retry behavior. Completing a lesson, winning a bot game, or gaining XP alone must not mark a unit mastered.
+17. **Retain and recover progress:** Exercise the one-day first review, successive intervals, two delayed successful reviews for mastery, and a failure that reschedules only the affected skill. Verify overdue status, timezone/day boundaries, refresh, backup/restore, and curriculum changes without lost progress or duplicated optional rewards.
+18. **Validate content and avoid dead ends:** Confirm the four opening-principles lessons, orientation, 12 reviewed opening units, three branches per opening unit, valid prerequisites, and published content manifest. Reject cycles and missing dependencies. API failures and unavailable optional bot activities must leave a usable lesson/review route.
 
 ## 15. Phased roadmap
 
@@ -438,6 +535,7 @@ These are future implementation checks, not tests to create during this planning
 - Select and validate rules/notation dependencies, engine build, catalog snapshot, and licensed assets.
 - Verify Chess.com puzzle and Lichess explorer payloads, choose the Lichess authentication flow, and define API cache/request budgets.
 - Define screens, content templates, benchmark fixtures, the selected 30 opening entries, first 12 reviewed studies, and import limits.
+- Define the learner roadmap, prerequisite rules, lesson/exercise templates, checkpoint rubrics, and initial retention policy. Plan the launch orientation, four Opening Essentials lessons, and learning units derived from the 12 reviewed starter studies.
 - Confirm restore behavior and data ownership before implementation begins.
 
 Exit condition: architecture decisions, content coverage target, data contract, and release checklist are reviewable. Implementation begins only when requested separately.
@@ -457,13 +555,15 @@ Exit condition: notation round-trips and editable studies survive reload and bac
 - Add the Chess.com daily-puzzle fetch, interactive solving, attribution, cached fallback, and saved attempts.
 - Runtime engine bots, difficulty presets, arbitrary-position starts, game saving, and recovery.
 - Board/piece skins, interface themes, previews, and saved preferences.
+- Ship the P0 learning path: onboarding, visual/list roadmap, short lessons, checkpoints, baseline spaced review, durable learner progress, and links to studies and bot practice. Publish the launch curriculum and its coverage manifest; advanced unpublished levels remain clearly marked.
 - All P0 requirements and relevant acceptance scenarios pass.
 
-Exit condition: a user can browse both selected opening packs, fetch Lichess continuations, organize branches, replay notation, customize the board, play a calculating bot from a saved position, and solve the Chess.com daily puzzle without leaving the platform. Verify both integrations with actual provider responses, then exercise cached and failure scenarios.
+Exit condition: a user can browse both selected opening packs, fetch Lichess continuations, organize branches, replay notation, customize the board, play a calculating bot from a saved position, solve the Chess.com daily puzzle, and follow a published guided unit through a checkpoint and scheduled review. Verify both integrations with actual provider responses, then exercise cached and failure scenarios.
 
 ### Phase 3 — Training and deeper study
 
-- Recall drills, spaced reviews, progress, transposition links, and repertoire-gap detection.
+- Extend the P0 learning path with fuller Foundations, placement/test-out, adaptive recommendations, personal course authoring, and optional motivational features.
+- Expand recall/review tools, transposition links, and repertoire-gap detection; baseline drills, scheduling, and progress already ship in Phase 2.
 - Engine analysis, opening sparring, game-to-study merges, revision history, and larger imports.
 - Expand reviewed lessons beyond the starter curriculum.
 
@@ -493,6 +593,9 @@ Phase ordering is dependency-based, not a calendar estimate. Estimate delivery o
 | External APIs change, rate-limit requests, or become unavailable | Isolate provider adapters, retain validated caches, back off, expose status, and recheck upstream contracts before releases. |
 | Explorer credentials are absent or exposed | Select the supported auth flow early; protect secrets, handle revocation, and keep catalog/cached study access available. |
 | Puzzle solution leaks into the learning interface | Hide supplied solution data until reveal/completion, including comments and previews; do not promise competitive secrecy. |
+| A visual path promises lessons that do not exist or gates exploration unnecessarily | Separate published lessons from catalog references/drafts, validate dependencies, and keep compendium access open. |
+| Gamification is mistaken for retained chess skill | Separate XP/streaks from checkpoint and delayed-recall evidence; allow users to hide motivational features. |
+| Curriculum revisions erase learning history or invalidate scores silently | Keep stable content IDs, version attempts/policies, and reassess only affected skills. |
 
 ## 17. Open decisions for future implementation
 
@@ -539,6 +642,7 @@ Outstanding decisions:
 | 1.2 | 2026-11-13 | Added SKIN-009 and documented the explicitly requested standalone skin importer, portable pack format, supplied asset pack, and remaining application-loader work. Main platform remains in planning. |
 | 1.3 | 2026-11-13 | Added SKIN-010/011, sound imports and event grouping, schema-2 manifests, audio previews, explicit partial imports, and optional archive recovery. Downloaded the supplied sound pack; main application playback remains planned. |
 | 1.4 | 2026-11-13 | Added SKIN-012 and a paste-first desktop interface with separate asset areas, detection, naming, background imports, cancellation, and preview/folder actions. Preserved CLI support and added mixed CSS/plain-URL parsing. |
+| 1.5 | 2026-11-13 | Made a guided learner roadmap a core P0 feature: levels/tracks, launch curriculum, short lessons, prerequisites, checkpoints, mastery criteria, spaced review, and compendium/bot links. Promoted LEARN-001–007 to P0; added PATH-001–018, P1 personalization/motivation, data requirements, acceptance scenarios, and updated delivery scope. Requirements only; no application implementation. |
 
 ## 19. Technical references
 

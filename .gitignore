@@ -37,3 +37,10 @@ __pycache__/
 
 ### Local documentation ###
 README.md
+
+### Personal application data and development dependencies ###
+.local/
+node_modules/
+engine/
+test-results/
+playwright-report/
