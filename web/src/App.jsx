@@ -3,7 +3,8 @@ import { Chess } from 'chess.js';
 import { ArrowRight, ArrowLeft, BookOpen, Check, ChevronRight, CircleHelp, Download, Flag, FolderOpen, GraduationCap, History, LayoutGrid, Lightbulb, LockKeyhole, Palette, Play, RefreshCw, RotateCcw, Settings, ShieldCheck, Sparkles, Swords, Target, Trophy, Upload, Volume2, X } from 'lucide-react';
 import Board, { palettes } from './Board.jsx';
 import BotView from './BotView.jsx';
-import { lessons, units, nextLesson, unitAvailable, dueReviews, recordResult, isCheckpoint } from './course.js';
+import { replyDelay } from './interaction.js';
+import { lessons, units, nextLesson, unitAvailable, dueReviews, recordResult, isCheckpoint, advanceLesson } from './course.js';
 import { downloadJSON, request, useWorkspace } from './workspace.js';
 
 const icons = { learn: GraduationCap, practice: Target, play: Swords, appearance: Palette, sessions: History, settings: Settings };
@@ -74,36 +75,37 @@ function LearningPath({ data, completed, pack, start, go }) {
 function LessonView({ lesson, data, change, pack, sound, start, go }) {
   const [feedback, setFeedback] = useState(''), [hint, setHint] = useState(false);
   const session = data.activeLesson?.lessonId === lesson.id ? data.activeLesson : null;
+  const waiting = Boolean(session && !session.ended && session.cursor % 2 === 1 && session.cursor < lesson.moves.length);
+  useEffect(() => {
+    if (!waiting) return;
+    const id = session.id, cursor = session.cursor;
+    const timer = setTimeout(() => {
+      const next = gameAt(lesson.moves, cursor + 1), played = next.history({ verbose: true }).at(-1);
+      sound(next.isCheck() ? 'move-check' : played.captured ? 'capture' : 'move-opponent');
+      change(state => state.activeLesson?.id === id && state.activeLesson.cursor === cursor ? advanceLesson(state, lesson, cursor + 1) : state);
+    }, replyDelay(Math.random, true));
+    return () => clearTimeout(timer);
+  }, [session?.id, session?.cursor, session?.ended]);
   if (!session) return <div className="empty-state"><BookOpen/><h1>{lesson.title}</h1><p>{lesson.objective}</p><button className="button primary" onClick={() => start(lesson.id)}>Start lesson <ArrowRight size={17}/></button></div>;
   const game = gameAt(lesson.moves, session.cursor), whiteMoves = lesson.moves.filter((_, i) => i % 2 === 0).length;
   const decision = Math.floor(session.cursor / 2), percent = session.cursor / lesson.moves.length * 100;
   function submit(move) {
-    if (session.ended) return;
+    if (session.ended || waiting) return false;
     const trial = new Chess(game.fen()); let played;
-    try { played = trial.move(move); } catch { return; }
+    try { played = trial.move(move); } catch { return false; }
     if (played.san !== lesson.moves[session.cursor]) {
       sound('puzzle-wrong'); setFeedback(`${played.san} is legal, but this lesson practices a different continuation. Try again.`);
-      change(state => { if (!state.activeLesson.mistakes.includes(session.cursor)) state.activeLesson.mistakes.push(session.cursor); return state; }); return;
+      change(state => { if (!state.activeLesson.mistakes.includes(session.cursor)) state.activeLesson.mistakes.push(session.cursor); return state; }); return false;
     }
     sound(played.captured ? 'capture' : 'move-self'); setFeedback('Good move. Notice how your pieces work together.'); setHint(false);
-    let cursor = session.cursor + 1;
-    if (cursor < lesson.moves.length && cursor % 2 === 1) cursor++;
-    change(state => {
-      state.activeLesson.cursor = cursor;
-      if (cursor >= lesson.moves.length) {
-        const result = { score: (whiteMoves - session.mistakes.length) / whiteMoves, assisted: session.assisted, checkpoint: isCheckpoint(lesson), review: session.review };
-        state.progress[lesson.id] = recordResult(state.progress[lesson.id], result);
-        state.activeLesson.ended = true; state.activeLesson.result = result;
-        state.sessions.unshift({ id: session.id, kind: 'lesson', lessonId: lesson.id, title: lesson.title, score: result.score, assisted: result.assisted, review: result.review, date: new Date().toISOString(), duration: Math.round((Date.now() - Date.parse(session.startedAt)) / 1000) });
-        state.sessions = state.sessions.slice(0, 5000);
-      }
-      return state;
-    });
+    change(state => advanceLesson(state, lesson, session.cursor + 1));
+    return true;
   }
+
   const help = () => { setHint(true); change(state => { state.activeLesson.assisted = true; return state; }); setFeedback(isCheckpoint(lesson) ? 'Practice mode: help is available, but this attempt will not pass the checkpoint.' : 'Hint shown. Your review will remember that this move needed help.'); };
   return <><button className="back-link" onClick={() => go('learn')}><ArrowLeft size={16}/> Back to learning path</button><div className="lesson-top"><div><span className="eyebrow">{session.review ? 'SPACED REVIEW' : isCheckpoint(lesson) ? 'CHECKPOINT' : 'LONDON SYSTEM'}</span><h1>{lesson.title}</h1><p>{lesson.objective}</p></div><span className="quiet-badge">{Math.min(decision + 1, whiteMoves)} / {whiteMoves} decisions</span></div><div className="progress-track lesson-progress"><span style={{ width: percent + '%' }}/></div>
-    <div className="study-layout"><section className="board-area"><div className="player-label"><span className="player-token">♟</span><div><strong>Black</strong><small>Prepared lesson replies</small></div></div><Board game={game} onMove={submit} pack={pack} palette={data.settings.board} disabled={session.ended} highlight={hint ? game.moves({ verbose: true }).find(move => move.san === lesson.moves[session.cursor])?.from : null}/><div className="player-label"><span className="player-token white-token">♙</span><div><strong>You’re White</strong><small>The London System</small></div><span className="board-help">Click or drag a piece</span></div></section>
-      <aside className="lesson-panel">{session.ended ? <><span className="result-icon"><Trophy size={28}/></span><span className="eyebrow">SESSION COMPLETE</span><h2>{isCheckpoint(lesson) && !data.progress[lesson.id]?.completed ? 'A little more practice.' : 'Another idea, understood.'}</h2><p>{Math.round(session.result.score * 100)}% correct on the first try{session.assisted ? ' · assisted' : ' · unassisted'}.</p><div className="inset-note">{isCheckpoint(lesson) && !data.progress[lesson.id]?.completed ? 'Pass with at least 80% accuracy and no hints. Retry whenever you’re ready.' : `This lesson is saved. Next review: ${new Date(data.progress[lesson.id]?.dueAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}.`}</div><button className="button primary full" onClick={() => start(nextLesson(data.progress).id)}>Continue learning <ArrowRight size={16}/></button><button className="button full" onClick={() => start(lesson.id, session.review, true)}><RotateCcw size={16}/> Try again</button><button className="text-button" onClick={() => { change(state => { state.game = { pgn: game.pgn(), side: 'w', source: lesson.title, startedAt: new Date().toISOString(), id: crypto.randomUUID() }; return state; }); go('play'); }}>Play this position against Robin <ArrowRight size={16}/></button></> : <><span className="eyebrow">YOUR TURN</span><h2>Find White’s next move.</h2><p>{isCheckpoint(lesson) && !session.assisted ? 'Recall the line. We’ll explain the result after your attempt.' : lesson.cues[decision] || 'Continue your coordinated development.'}</p><div className="inset-note"><Lightbulb size={19}/><span>{decision === 0 ? 'Start with the center. Then give each piece a useful job.' : 'If Black changes the structure, think about what changed before continuing the setup.'}</span></div><div className="lesson-feedback" role="status">{feedback || 'The board is ready. Take your time.'}</div>{hint && <div className="hint-answer">This line continues with <strong>{lesson.moves[session.cursor]}</strong>.</div>}<button className="button full" onClick={help}><CircleHelp size={16}/>{isCheckpoint(lesson) ? 'Switch to practice & show hint' : 'Show a hint'}</button><p className="microcopy">A different legal move is not necessarily bad. Here, you’re learning one specific line.</p></>}
+    <div className="study-layout"><section className="board-area"><div className="player-label"><span className="player-token">♟</span><div><strong>Black</strong><small>Prepared lesson replies</small></div></div><Board game={game} onMove={submit} pack={pack} palette={data.settings.board} disabled={session.ended || waiting} highlight={hint ? game.moves({ verbose: true }).find(move => move.san === lesson.moves[session.cursor])?.from : null}/><div className="player-label"><span className="player-token white-token">♙</span><div><strong>You’re White</strong><small>The London System</small></div><span className="board-help">Click or drag a piece</span></div></section>
+      <aside className="lesson-panel">{session.ended ? <><span className="result-icon"><Trophy size={28}/></span><span className="eyebrow">SESSION COMPLETE</span><h2>{isCheckpoint(lesson) && !data.progress[lesson.id]?.completed ? 'A little more practice.' : 'Another idea, understood.'}</h2><p>{Math.round(session.result.score * 100)}% correct on the first try{session.assisted ? ' · assisted' : ' · unassisted'}.</p><div className="inset-note">{isCheckpoint(lesson) && !data.progress[lesson.id]?.completed ? 'Pass with at least 80% accuracy and no hints. Retry whenever you’re ready.' : `This lesson is saved. Next review: ${new Date(data.progress[lesson.id]?.dueAt).toLocaleDateString([], { month: 'short', day: 'numeric' })}.`}</div><button className="button primary full" onClick={() => start(nextLesson(data.progress).id)}>Continue learning <ArrowRight size={16}/></button><button className="button full" onClick={() => start(lesson.id, session.review, true)}><RotateCcw size={16}/> Try again</button><button className="text-button" onClick={() => { change(state => { state.game = { pgn: game.pgn(), side: 'w', source: lesson.title, startedAt: new Date().toISOString(), id: crypto.randomUUID() }; return state; }); go('play'); }}>Play this position against Robin <ArrowRight size={16}/></button></> : <><span className="eyebrow">YOUR TURN</span><h2>Find White’s next move.</h2><p>{isCheckpoint(lesson) && !session.assisted ? 'Recall the line. We’ll explain the result after your attempt.' : lesson.cues[decision] || 'Continue your coordinated development.'}</p><div className="inset-note"><Lightbulb size={19}/><span>{decision === 0 ? 'Start with the center. Then give each piece a useful job.' : 'If Black changes the structure, think about what changed before continuing the setup.'}</span></div><div className="lesson-feedback" role="status">{feedback || 'The board is ready. Take your time.'}</div>{hint && <div className="hint-answer">This line continues with <strong>{lesson.moves[session.cursor]}</strong>.</div>}<button className="button full" onClick={help} disabled={waiting}><CircleHelp size={16}/>{isCheckpoint(lesson) ? 'Switch to practice & show hint' : 'Show a hint'}</button><p className="microcopy">A different legal move is not necessarily bad. Here, you’re learning one specific line.</p></>}
       <div className="moves-panel"><span className="eyebrow">MOVES PLAYED</span><div>{game.history().map((move, index) => <span key={index}>{index % 2 === 0 && <small>{Math.floor(index / 2) + 1}.</small>} {move}</span>)}</div></div></aside></div>
   </>;
 }

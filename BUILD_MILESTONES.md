@@ -31,6 +31,8 @@ Push each verified milestone to `main`. Source changes require Node to build; ru
 
 ## Architectural boundaries
 
+Interaction refinement milestone: inspected the supplied 64.9-second reference video. Added 190 ms click glides, pointer-captured drag ghosts/direct drops, 140 ms illegal-drop return, capture/castling/promotion handling, 1–1.6 second bot response pacing, and separately delayed lesson replies. Seven unit checks and sixteen browser scenarios passed, including drag/click behavior and measured bot delay. The reference is local and is not committed.
+
 - `web/src`: React UI, chess.js legal rules, versioned course content, engine adapter, and persistence client.
 - `app`: loopback-only host, versioned SQLite state with optimistic concurrency, local asset service, and update/launcher logic.
 - `tools`: existing skin/sound importer, independent from the main app.

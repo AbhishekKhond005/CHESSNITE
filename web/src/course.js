@@ -42,3 +42,17 @@ export function recordResult(previous = {}, result, now = Date.now()) {
     mastered: Boolean(previous.mastered || (completed && reviewDates.length >= 2)),
     lastScore: result.score, assisted: result.assisted, dueAt };
 }
+export function advanceLesson(state, lesson, cursor, now = Date.now()) {
+  const session = state.activeLesson;
+  if (!session || session.lessonId !== lesson.id || session.ended) return state;
+  session.cursor = cursor;
+  if (cursor >= lesson.moves.length) {
+    const count = Math.ceil(lesson.moves.length / 2);
+    const result = { score: (count - session.mistakes.length) / count, assisted: session.assisted, checkpoint: isCheckpoint(lesson), review: session.review };
+    state.progress[lesson.id] = recordResult(state.progress[lesson.id], result, now);
+    session.ended = true; session.result = result;
+    state.sessions.unshift({ id: session.id, kind: 'lesson', lessonId: lesson.id, title: lesson.title, score: result.score, assisted: result.assisted, review: result.review, date: new Date(now).toISOString(), duration: Math.round((now - Date.parse(session.startedAt)) / 1000) });
+    state.sessions = state.sessions.slice(0, 5000);
+  }
+  return state;
+}

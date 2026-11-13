@@ -4,6 +4,7 @@ import { ArrowRight, Download, Flag, RefreshCw, RotateCcw, Swords } from 'lucide
 import Board from './Board.jsx';
 import { RobinEngine } from './engine.js';
 import { lessons } from './course.js';
+import { pause, replyDelay } from './interaction.js';
 
 function parseGame(pgn) { const game = new Chess(); if (pgn) game.loadPgn(pgn); return game; }
 export default function BotView({ data, change, pack, sound }) {
@@ -28,7 +29,7 @@ export default function BotView({ data, change, pack, sound }) {
     if (game.turn() === saved.side) { setThinking(false); return; }
     const controller = new AbortController(); let active = true;
     setThinking(true); setError('');
-    engine.current.think(game, controller.signal).then(uci => {
+    Promise.all([engine.current.think(game, controller.signal), pause(replyDelay(), controller.signal)]).then(([uci]) => {
       if (!active) return;
       const next = parseGame(saved.pgn);
       const move = next.move({ from: uci.slice(0, 2), to: uci.slice(2, 4), ...(uci[4] ? { promotion: uci[4] } : {}) });
@@ -47,12 +48,12 @@ export default function BotView({ data, change, pack, sound }) {
     setError(''); setFlipped(false); sound('game-start');
   }
   function submit(move) {
-    if (!saved || saved.result || thinking || game.turn() !== saved.side || error) return;
+    if (!saved || saved.result || thinking || game.turn() !== saved.side || error) return false;
     const next = parseGame(saved.pgn);
     try {
       const played = next.move(move);
-      sound(next.isCheck() ? 'move-check' : played.captured ? 'capture' : played.isKingsideCastle() || played.isQueensideCastle() ? 'castle' : 'move-self'); persist(next);
-    } catch { setError('That move could not be applied. Try selecting the piece again.'); }
+      sound(next.isCheck() ? 'move-check' : played.captured ? 'capture' : played.isKingsideCastle() || played.isQueensideCastle() ? 'castle' : 'move-self'); persist(next); return true;
+    } catch { setError('That move could not be applied. Try selecting the piece again.'); return false; }
   }
   function undo() {
     const next = parseGame(saved.pgn); next.undo();

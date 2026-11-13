@@ -9,6 +9,7 @@ test.beforeEach(async ({ request }) => {
   } } });
 });
 async function move(page, from, to) {
+  await expect(page.locator('.chessboard')).toHaveAttribute('data-interactive', 'true');
   await page.locator(`[data-square="${from}"]`).click();
   await page.locator(`[data-square="${to}"]`).click();
 }
@@ -126,3 +127,55 @@ for (const assisted of [false, true]) {
     await expect(page.getByRole('heading', { name: assisted ? 'A little more practice.' : 'Another idea, understood.' })).toBeVisible();
   });
 }
+
+test('drag follows the pointer, lands without a second glide, and rejects illegal drops', async ({ page }) => {
+  await page.goto('/#play'); await page.getByRole('button', { name: 'Play from the start', exact: true }).click();
+  async function center(square) { const rect = await page.locator(`[data-square="${square}"]`).boundingBox(); return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }; }
+  const from = await center('d2'), illegal = await center('d5'), to = await center('d4');
+  await page.mouse.move(from.x, from.y); await page.mouse.down(); await page.mouse.move(illegal.x, illegal.y, { steps: 8 });
+  await expect(page.getByTestId('drag-piece')).toBeVisible();
+  await expect(page.locator('[data-square="d2"] .board-piece')).toHaveClass(/piece-hidden/);
+  await page.mouse.up();
+  await expect(page.getByTestId('drag-piece')).toHaveCount(0);
+  await expect(page.locator('[data-square="d2"] img')).toHaveAttribute('alt', 'wp');
+  await page.mouse.move(from.x, from.y); await page.mouse.down(); await page.mouse.move(to.x, to.y, { steps: 8 });
+  const started = Date.now(); await page.mouse.up();
+  await expect(page.locator('[data-square="d4"] img')).toHaveAttribute('alt', 'wp');
+  await expect(page.locator('[data-motion="slide"]')).toHaveCount(0);
+  await expect(page.locator('.game-status')).toContainText('thinking');
+  await expect(page.locator('.game-status')).toHaveText('Your move. Take your time.', { timeout: 10000 });
+  expect(Date.now() - started).toBeGreaterThanOrEqual(900);
+});
+
+test('click moves glide and lesson replies are separate delayed moves', async ({ page }) => {
+  await page.goto('/'); await page.getByRole('button', { name: 'Start the course' }).click();
+  await move(page, 'd2', 'd4');
+  await expect(page.locator('[data-motion="slide"]')).toHaveCount(1);
+  await expect(page.locator('[data-square="d7"] img')).toHaveAttribute('alt', 'bp');
+  await expect(page.locator('.chessboard')).toHaveAttribute('data-interactive', 'false');
+  await expect(page.locator('[data-square="d5"] img')).toHaveAttribute('alt', 'bp');
+  await expect(page.locator('.chessboard')).toHaveAttribute('data-interactive', 'true');
+});
+
+async function seedPosition(request, game) {
+  const current = await (await request.get('/api/state')).json();
+  current.state.game = { id: 'animation-test', pgn: game.pgn(), side: 'w', startedAt: new Date().toISOString() };
+  await request.post('/api/state', { headers: { 'X-Chessnite-Key': current.key }, data: { state: current.state, revision: current.revision } });
+}
+test('castling animates king and rook together', async ({ page, request }) => {
+  const game = new Chess(); lessons.find(item => item.id === 'castle').moves.slice(0, -1).forEach(move => game.move(move));
+  await seedPosition(request, game); await page.goto('/#play'); await move(page, 'e1', 'g1');
+  await expect(page.locator('[data-motion="slide"]')).toHaveCount(2);
+  await expect(page.locator('[data-square="f1"] img')).toHaveAttribute('alt', 'wr');
+});
+test('en passant and promotion keep correct pieces while animating', async ({ page, request }) => {
+  const game = new Chess(); ['e4','a6','e5','d5'].forEach(move => game.move(move));
+  await seedPosition(request, game); await page.goto('/#play'); await move(page, 'e5', 'd6');
+  await expect(page.locator('[data-square="d5"] img')).toHaveCount(0);
+  await expect(page.locator('[data-square="d6"] img')).toHaveAttribute('alt', 'wp');
+  await page.goto('/#learn'); await saved(page);
+  await seedPosition(request, new Chess('7k/P7/8/8/8/8/8/7K w - - 0 1'));
+  await page.reload(); await page.getByRole('button', { name: 'Play Robin', exact: true }).click();
+  await move(page, 'a7', 'a8'); await page.getByRole('button', { name: 'Queen', exact: true }).click();
+  await expect(page.locator('[data-square="a8"] img')).toHaveAttribute('alt', 'wq');
+});
