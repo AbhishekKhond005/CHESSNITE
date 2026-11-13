@@ -33,6 +33,8 @@ Push each verified milestone to `main`. Source changes require Node to build; ru
 
 Interaction refinement milestone: inspected the supplied 64.9-second reference video. Added 190 ms click glides, pointer-captured drag ghosts/direct drops, 140 ms illegal-drop return, capture/castling/promotion handling, 1–1.6 second bot response pacing, and separately delayed lesson replies. Seven unit checks and sixteen browser scenarios passed, including drag/click behavior and measured bot delay. The reference is local and is not committed.
 
+Interface refinement milestone: dark background by default with a saved light alternative; larger controls/type, icon navigation and game actions, fewer repeated descriptions, expandable lesson notes, and a primary board-set dropdown showing every imported set. Choosing pieces selects the matching imported board; flat colors remain optional entries in that dropdown. Sound uses cached decoding, a louder default level with gain/limiting, a volume slider and an explicit preview. Saved progress and games are unchanged. Eight unit checks, five backend checks, thirty importer checks and twenty browser scenarios passed, including actual audio decode/gain/mute, keyboard/touch input, board matching, and theme/volume persistence. Dark desktop screens were inspected.
+
 - `web/src`: React UI, chess.js legal rules, versioned course content, engine adapter, and persistence client.
 - `app`: loopback-only host, versioned SQLite state with optimistic concurrency, local asset service, and update/launcher logic.
 - `tools`: existing skin/sound importer, independent from the main app.

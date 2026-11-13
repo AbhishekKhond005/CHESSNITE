@@ -7,7 +7,7 @@ from pathlib import Path
 
 def default_state():
     return {"schemaVersion": 1, "progress": {}, "sessions": [], "game": None,
-            "settings": {"pieces": "neo-wood", "board": "sage", "sounds": True, "motion": True}}
+            "settings": {"pieces": "neo-wood", "board": "sage", "boardChoice": "pack:neo-wood", "theme": "dark", "volume": .9, "sounds": True, "motion": True}}
 
 
 def validate_state(state):

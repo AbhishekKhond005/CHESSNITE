@@ -1,6 +1,6 @@
 # CHESSNITE — Product Requirements and Development Plan
 
-Version: 1.6  
+Version: 1.7  
 Created: 2026-11-13  
 Last updated: 2026-11-13  
 Status: First personal application release and standalone skin/sound importer implemented on explicit request. Broader platform features remain planned.  
@@ -266,6 +266,16 @@ Cosmetics are visual preferences. They must not alter game state, training corre
 - The future loader should support both manifest versions, keep images and sound preferences independent, and map events such as move, capture, check, promotion, castling, game result, and learning feedback to sound keys. The app playback layer remains unimplemented.
 
 ## 8. Learning, revision, and progress
+
+### Display and interaction refinements — implemented
+
+- Use a dark background by default, with a saved light option. Enlarge core labels and controls; use recognizable icons with accessible names/tooltips for navigation and game actions. Put secondary explanations in expandable notes rather than repeating them during play.
+- Board selection must list imported board images in the primary dropdown, alongside optional flat palettes. Selecting a piece pack should select its matching board when present. Preserve independent board choice and adjustable frame cropping.
+- Provide audible local move cues, a saved volume slider, mute, and an explicit preview. Cache decoded audio and limit boosted peaks.
+- Click moves glide between squares; dragged pieces follow the pointer and land on release. Invalid drops return the piece. Animate captures and both castling pieces, and handle promotion and en passant correctly. Preserve keyboard and touch controls, cancellation, and reduced-motion preferences.
+- Robin must pause visibly before replying (initial pacing: 1–1.6 seconds, with calculation performed concurrently). Lesson replies are separately delayed (initially 0.7–0.95 seconds), so the learner can see both half-moves. Undo, restart, navigation, and reload must not apply stale delayed moves.
+
+### Core learning requirements
 
 | ID | Priority | Requirement |
 | --- | --- | --- |
@@ -659,6 +669,7 @@ Outstanding decisions:
 | 1.4 | 2026-11-13 | Added SKIN-012 and a paste-first desktop interface with separate asset areas, detection, naming, background imports, cancellation, and preview/folder actions. Preserved CLI support and added mixed CSS/plain-URL parsing. |
 | 1.5 | 2026-11-13 | Made a guided learner roadmap a core P0 feature: levels/tracks, launch curriculum, short lessons, prerequisites, checkpoints, mastery criteria, spaced review, and compendium/bot links. Promoted LEARN-001–007 to P0; added PATH-001–018, P1 personalization/motivation, data requirements, acceptance scenarios, and updated delivery scope. Requirements only; no application implementation. |
 | 1.6 | 2026-11-13 | Implemented the user's narrowed first personal release: London course, one calculating 1000-target bot, responsive flat UI, skins, SQLite progress, backups, launcher and in-app update/restart. Recorded the shipped scope separately from the broader platform roadmap. |
+| 1.7 | 2026-11-13 | Refined interactions using the supplied local video; added click glides, pointer dragging, delayed opponent/lesson replies, larger symbolic controls, dark/light backgrounds, primary imported-board selection with matching sets, and louder configurable audio. Preserved saved progress. |
 
 ## 19. Technical references
 

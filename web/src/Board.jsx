@@ -20,6 +20,7 @@ export default function Board({ game, onMove, pack, palette = 'sage', flipped = 
   const colors = palettes[palette] || palettes.sage;
   const legal = selected && !disabled ? game.moves({ square: selected, verbose: true }) : [];
   const last = history.at(-1);
+  const inCheck = game.isCheck();
   useLayoutEffect(() => {
     const old = previous.current;
     previous.current = { fen, history, pieces, flipped };
@@ -48,6 +49,11 @@ export default function Board({ game, onMove, pack, palette = 'sage', flipped = 
     if (entries.length) timer.current = setTimeout(() => setMotion([]), SLIDE_MS);
   }, [fen, flipped]);
   useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(() => {
+    const resetGesture = () => { gesture.current = null; setDrag(null); setHover(null); setSelected(null); };
+    window.addEventListener('blur', resetGesture);
+    return () => window.removeEventListener('blur', resetGesture);
+  }, []);
   function attempt(from, to, promoted, dragged = false) {
     if (disabled || !from || !to) return false;
     const candidates = game.moves({ square: from, verbose: true }).filter(item => item.to === to);
@@ -110,8 +116,8 @@ export default function Board({ game, onMove, pack, palette = 'sage', flipped = 
       const hidden = drag?.from === square || motion.some(item => item.to === square && item.type !== 'capture');
       const light = ('abcdefgh'.indexOf(file) + rank) % 2 === 0;
       return <button key={square} type="button" data-square={square} aria-label={`${square}${code ? ' ' + code : ''}`} aria-pressed={selected === square}
-        className={`square ${light ? 'light' : 'dark'} ${last && [last.from, last.to].includes(square) ? 'last' : ''} ${selected === square ? 'selected' : ''} ${highlight === square ? 'hint-square' : ''} ${hover === square ? 'drop-hover' : ''}`}
-        onPointerDown={event => pointerDown(event, square)} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={event => pointerUp(event, true)} onClick={event => { if (event.detail === 0) click(square); }}>
+        className={`square ${light ? 'light' : 'dark'} ${last && [last.from, last.to].includes(square) ? 'last' : ''} ${selected === square ? 'selected' : ''} ${highlight === square ? 'hint-square' : ''} ${hover === square ? 'drop-hover' : ''} ${inCheck && code === game.turn() + 'k' ? 'in-check' : ''}`}
+        onPointerDown={event => pointerDown(event, square)} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={event => pointerUp(event, true)} onLostPointerCapture={() => { if (gesture.current) { gesture.current = null; setDrag(null); setHover(null); } }} onClick={event => { if (event.detail === 0) click(square); }}>
         {col === 0 && <span className="rank-coordinate">{rank}</span>}{row === 7 && <span className="file-coordinate">{file}</span>}
         {code && <span className={`board-piece ${hidden ? 'piece-hidden' : ''}`}>{sprite(code)}</span>}
         {available && <span className={code ? 'capture-marker' : 'move-marker'} />}

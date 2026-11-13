@@ -17,7 +17,7 @@ async function saved(page) { await expect(page.locator('.sidebar-bottom')).toCon
 test('learn a London line, keep completion and resume after reload', async ({ page }) => {
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto('/');
-  await expect(page.getByRole('heading', { name: 'Your next move starts here.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Learn', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Start the course' }).click();
   await move(page, 'd2', 'd4'); await move(page, 'g1', 'f3'); await move(page, 'c1', 'f4');
   await expect(page.getByRole('heading', { name: 'Another idea, understood.' })).toBeVisible();
@@ -34,27 +34,27 @@ test('an unfinished lesson restores the exact position and skin changes persist'
   await expect(page.locator('[data-square="d5"] img')).toHaveAttribute('alt', 'bp');
   await page.getByRole('button', { name: 'Appearance', exact: true }).click();
   await page.locator('.piece-option').filter({ hasText: 'uqihi + bin2s' }).click();
-  await page.getByRole('button', { name: 'Walnut', exact: true }).click(); await saved(page); await page.reload();
-  await expect(page.locator('[data-square="g1"] img')).toHaveAttribute('src', /uqihi-bin2s/);
-  await expect(page.getByRole('button', { name: 'Walnut', exact: true })).toHaveClass(/chosen/);
+  await page.getByLabel('Board set', { exact: true }).selectOption('flat:walnut'); await saved(page); await page.reload();
+  await expect(page.locator('[data-square="e1"] img')).toHaveAttribute('src', /uqihi-bin2s/);
+  await expect(page.getByLabel('Board set', { exact: true })).toHaveValue('flat:walnut');
 });
 test('real WASM opponent plays a legal reply, resumes, and handles undo', async ({ page }) => {
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.goto('/#play'); await page.getByRole('button', { name: 'Play from the start', exact: true }).click();
   await move(page, 'd2', 'd4');
-  await expect(page.locator('.game-status')).toHaveText('Your move. Take your time.', { timeout: 30000 });
+  await expect(page.locator('.game-status')).toHaveText('Your move', { timeout: 30000 });
   await expect(page.locator('.moves-panel').last().locator('span small')).toHaveCount(1);
   await expect(page.locator('.moves-panel').last()).toContainText('d4');
   await saved(page); const history = await page.locator('.moves-panel').last().textContent(); await page.reload();
   await expect(page.locator('.moves-panel').last()).toHaveText(history);
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await expect(page.locator('[data-square="d2"] img')).toHaveAttribute('alt', 'wp');
-  await expect(page.locator('.game-status')).toContainText('Your move.'); expect(errors).toEqual([]);
+  await expect(page.locator('.game-status')).toContainText('Your move'); expect(errors).toEqual([]);
 });
 test('bot calculates the first move when playing Black', async ({ page }) => {
   await page.goto('/#play'); await page.getByRole('button', { name: 'Black', exact: true }).click();
   await page.getByRole('button', { name: 'Play from the start', exact: true }).click();
-  await expect(page.locator('.game-status')).toHaveText('Your move. Take your time.', { timeout: 30000 });
+  await expect(page.locator('.game-status')).toHaveText('Your move', { timeout: 30000 });
   await expect(page.locator('.moves-panel').last().locator('span small')).toHaveCount(1);
   await expect(page.locator('.chessboard button').first()).toHaveAttribute('data-square', 'h1');
 });
@@ -73,15 +73,15 @@ test('undo while thinking ignores late bot responses', async ({ page }) => {
   await expect(page.locator('[data-square="d2"] img')).toHaveAttribute('alt', 'wp');
   await page.waitForTimeout(500);
   await expect(page.locator('.moves-panel').last().locator('small')).toHaveCount(0);
-  await expect(page.locator('.game-status')).toContainText('Your move.');
+  await expect(page.locator('.game-status')).toContainText('Your move');
 });
 
 test('imported board textures apply and remain selected after reload', async ({ page }) => {
   await page.goto('/#appearance');
-  await page.getByLabel('Board image', { exact: true }).selectOption('ca09k-ohdxn');
+  await page.getByLabel('Board set', { exact: true }).selectOption('pack:ca09k-ohdxn');
   await expect(page.locator('.chessboard')).toHaveClass(/textured/);
   await saved(page); await page.reload();
-  await expect(page.getByLabel('Board image', { exact: true })).toHaveValue('ca09k-ohdxn');
+  await expect(page.getByLabel('Board set', { exact: true })).toHaveValue('pack:ca09k-ohdxn');
 });
 
 test('backup export and restore preserve lesson progress', async ({ page }) => {
@@ -108,7 +108,7 @@ test('API refuses missing credentials, stale writes, and invalid backups', async
 test('the full study and engine experience works without internet requests', async ({ page }) => {
   await page.route('**/*', route => route.request().url().startsWith('http://127.0.0.1:8766/') ? route.continue() : route.abort());
   await page.goto('/#play'); await page.getByRole('button', { name: 'Play from the London setup' }).click();
-  await expect(page.locator('.game-status')).toHaveText('Your move. Take your time.', { timeout: 30000 });
+  await expect(page.locator('.game-status')).toHaveText('Your move', { timeout: 30000 });
   await expect(page.locator('.moves-panel').last()).toContainText('O-O');
 });
 
@@ -143,7 +143,7 @@ test('drag follows the pointer, lands without a second glide, and rejects illega
   await expect(page.locator('[data-square="d4"] img')).toHaveAttribute('alt', 'wp');
   await expect(page.locator('[data-motion="slide"]')).toHaveCount(0);
   await expect(page.locator('.game-status')).toContainText('thinking');
-  await expect(page.locator('.game-status')).toHaveText('Your move. Take your time.', { timeout: 10000 });
+  await expect(page.locator('.game-status')).toHaveText('Your move', { timeout: 10000 });
   expect(Date.now() - started).toBeGreaterThanOrEqual(900);
 });
 
@@ -178,4 +178,64 @@ test('en passant and promotion keep correct pieces while animating', async ({ pa
   await page.reload(); await page.getByRole('button', { name: 'Play Robin', exact: true }).click();
   await move(page, 'a7', 'a8'); await page.getByRole('button', { name: 'Queen', exact: true }).click();
   await expect(page.locator('[data-square="a8"] img')).toHaveAttribute('alt', 'wq');
+});
+
+test('imported boards are the main dropdown, matching pieces select a board, and controls are readable', async ({ page }) => {
+  await page.goto('/#appearance');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect(page.getByLabel('Board set', { exact:true })).toHaveValue('pack:neo-wood');
+  await expect(page.getByLabel('Board set', { exact:true }).locator('optgroup').first().locator('option')).toHaveCount(4);
+  await page.locator('.piece-option').filter({hasText:'GRAND CHESS AUTO'}).click();
+  await expect(page.getByLabel('Board set', { exact:true })).toHaveValue('pack:grand-chess-auto');
+  await expect(page.locator('.chessboard')).toHaveClass(/textured/);
+  expect(await page.getByLabel('Board set', { exact:true }).evaluate(element=>parseFloat(getComputedStyle(element).fontSize))).toBeGreaterThanOrEqual(14);
+  await saved(page); await page.screenshot({path:'.local/chessnite-dark-appearance.png',fullPage:true});
+  await page.getByRole('button', {name:'Learning path',exact:true}).click();
+  await page.screenshot({path:'.local/chessnite-dark-course.png',fullPage:true});
+});
+test('background, volume and animation preferences persist', async ({ page }) => {
+  await page.goto('/#appearance');
+  await expect(page.getByRole('slider',{name:'Sound volume'})).toHaveValue('90');
+  await page.getByRole('button',{name:'Light',exact:true}).click();
+  const slider=page.getByRole('slider',{name:'Sound volume'}); await slider.focus(); await slider.press('End');
+  await page.getByRole('switch',{name:'Piece animations'}).click();
+  await saved(page); await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme','light');
+  await expect(slider).toHaveValue('100');
+  await expect(page.getByRole('switch',{name:'Piece animations'})).toHaveAttribute('aria-checked','false');
+});
+test('keyboard and touch move input remain available', async ({ page, browser }) => {
+  await page.goto('/'); await page.getByRole('button',{name:'Start the course'}).click();
+  await page.locator('[data-square="d2"]').focus(); await page.keyboard.press('Enter');
+  await page.locator('[data-square="d4"]').focus(); await page.keyboard.press('Enter');
+  await expect(page.locator('[data-square="d4"] img')).toHaveAttribute('alt','wp'); await saved(page); await page.getByRole('button',{name:'Learning path',exact:true}).click();
+  const context=await browser.newContext({hasTouch:true,viewport:{width:390,height:844}});
+  const touch=await context.newPage();
+  try {
+    await touch.goto('http://127.0.0.1:8766/#play'); await touch.getByRole('button',{name:'Play from the start',exact:true}).tap();
+    await touch.locator('[data-square="d2"]').tap(); await touch.locator('[data-square="d4"]').tap();
+    await expect(touch.locator('[data-square="d4"] img')).toHaveAttribute('alt','wp');
+    expect(await touch.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+    await expect(touch.locator('.game-status')).toHaveText('Your move',{timeout:10000});
+    await saved(touch);
+  } finally { await context.close(); }
+});
+
+test('sound preview decodes local audio, uses the louder output, and respects zero volume', async ({ page }) => {
+  await page.addInitScript(() => {
+    const Native = window.AudioContext;
+    window.AudioContext = class extends Native {
+      constructor(...args) { super(...args); window.testAudio = this; }
+      createGain() { const gain = super.createGain(); window.testGain = gain; return gain; }
+      createBufferSource() { window.testSources = (window.testSources || 0) + 1; return super.createBufferSource(); }
+    };
+  });
+  await page.goto('/#appearance');
+  await page.getByRole('button', {name:'Preview move sound',exact:true}).click();
+  await expect.poll(()=>page.evaluate(()=>window.testSources || 0)).toBe(1);
+  await expect.poll(()=>page.evaluate(()=>window.testGain.gain.value)).toBeGreaterThan(1);
+  expect(await page.evaluate(()=>window.testAudio.state)).toBe('running');
+  await page.getByRole('slider',{name:'Sound volume'}).focus(); await page.keyboard.press('Home');
+  await page.getByRole('button', {name:'Preview move sound',exact:true}).click();
+  expect(await page.evaluate(()=>window.testSources)).toBe(1);
 });
