@@ -1,9 +1,9 @@
 # CHESSNITE — Product Requirements and Development Plan
 
-Version: 1.5  
+Version: 1.6  
 Created: 2026-11-13  
 Last updated: 2026-11-13  
-Status: Main application in planning; standalone skin and sound importer implemented on explicit request. This document alone does not authorize further implementation.  
+Status: First personal application release and standalone skin/sound importer implemented on explicit request. Broader platform features remain planned.  
 Purpose: A living specification that can be expanded as new requirements are requested.
 
 ## 1. Product vision
@@ -43,6 +43,21 @@ Use original branding, interface design, and licensed or original assets. Chess.
 - “Not hardcoded bots” means runtime calculation from arbitrary legal positions. An optional opening repertoire can guide early choices but cannot be the bot's only move source.
 
 ### Priority labels
+
+The current first build follows the user's narrowed release scope below; the broader P0/P1 catalog in this document describes the future platform and is not a claim that every listed feature is already implemented.
+
+### Current personal release — implemented scope
+
+- One White-side London System course: ten interactive lessons, four chapters, key reply branches, move recall, an eleven-decision checkpoint, and spaced reviews.
+- One runtime Stockfish-based bot, Robin, with an approximate 1000-strength target; untimed play, either color, lesson-position starts, undo, resign, PGN export, and saved games. Strength has not been externally calibrated.
+- Clean responsive UI; imported piece packs, flat board palettes, imported board textures with frame adjustment, and local sound cues.
+- SQLite session/progress storage, exact unfinished-lesson/game resume, local backups, and conflict protection against stale browser tabs.
+- `Open CHESSNITE.cmd` opens a local browser app without the IDE. The shipped production build requires Python and a browser to run; npm is needed for source development only.
+- Settings provides explicit GitHub update and restart actions. Updates fast-forward the configured repository and preserve ignored local data; tracked source edits must be committed before updating.
+- The local URL is `http://127.0.0.1:8765` while the launcher service is running. This release is for one computer; it is not a public hosted or synchronized multi-device app.
+- Live daily puzzles/explorer enrichment, other courses, broader strategic assessments, and personal repertoire authoring remain future work. See `BUILD_MILESTONES.md` for actual shipped milestones and checks.
+
+### Platform priority labels
 
 - **P0:** Required for the first usable release.
 - **P1:** Next-stage functionality that improves learning and daily use.
@@ -643,6 +658,7 @@ Outstanding decisions:
 | 1.3 | 2026-11-13 | Added SKIN-010/011, sound imports and event grouping, schema-2 manifests, audio previews, explicit partial imports, and optional archive recovery. Downloaded the supplied sound pack; main application playback remains planned. |
 | 1.4 | 2026-11-13 | Added SKIN-012 and a paste-first desktop interface with separate asset areas, detection, naming, background imports, cancellation, and preview/folder actions. Preserved CLI support and added mixed CSS/plain-URL parsing. |
 | 1.5 | 2026-11-13 | Made a guided learner roadmap a core P0 feature: levels/tracks, launch curriculum, short lessons, prerequisites, checkpoints, mastery criteria, spaced review, and compendium/bot links. Promoted LEARN-001–007 to P0; added PATH-001–018, P1 personalization/motivation, data requirements, acceptance scenarios, and updated delivery scope. Requirements only; no application implementation. |
+| 1.6 | 2026-11-13 | Implemented the user's narrowed first personal release: London course, one calculating 1000-target bot, responsive flat UI, skins, SQLite progress, backups, launcher and in-app update/restart. Recorded the shipped scope separately from the broader platform roadmap. |
 
 ## 19. Technical references
 

@@ -17,7 +17,7 @@ export const units = [
   ]},
   { id: 'plans', title: 'Find your next move', subtitle: 'Turn a setup into a middlegame.', lessons: [
     lesson('e5-outpost', 'The e5 outpost', 'Coordinate before jumping into the center.', 'd4 d5 Nf3 Nf6 Bf4 e6 e3 c5 c3 Nc6 Nbd2 Bd6 Bd3 O-O O-O b6 Ne5', ['Take space.', 'Develop.', 'Activate your bishop.', 'Support the center.', 'Reinforce d4.', 'Develop to d2.', 'Point toward the kingside.', 'Castle.', 'Use the supported e5 square.'], 'Identify a thematic Ne5 idea; it is a candidate, not an automatic move in every London position.'),
-    lesson('checkpoint', 'London checkpoint', 'Recall the complete setup without help.', 'd4 d5 Nf3 Nf6 Bf4 e6 e3 c5 c3 Nc6 Nbd2 Bd6 Bd3 O-O O-O b6 Ne5 Bb7 Qf3 Rc8 Rad1', [], 'Make ten prepared decisions without a hint. Eight correct first attempts pass this launch checkpoint.'),
+    lesson('checkpoint', 'London checkpoint', 'Recall the complete setup without help.', 'd4 d5 Nf3 Nf6 Bf4 e6 e3 c5 c3 Nc6 Nbd2 Bd6 Bd3 O-O O-O b6 Ne5 Bb7 Qf3 Rc8 Rad1', [], 'Make eleven prepared decisions without a hint. At least nine correct first attempts pass this launch checkpoint.'),
   ]},
 ];
 export const lessons = units.flatMap(unit => unit.lessons.map(item => ({ ...item, unitId: unit.id })));
@@ -29,13 +29,16 @@ export function dueReviews(progress, now = Date.now()) { return lessons.filter(i
 export function recordResult(previous = {}, result, now = Date.now()) {
   const success = result.score >= 0.8 && !result.assisted;
   const days = [1, 3, 7, 14, 30];
-  const reviews = result.review && success ? Math.min((previous.reviews || 0) + 1, 4) : success ? previous.reviews || 0 : 0;
-  const reviewDates = [...(previous.reviewDates || [])];
+  const reviewDates = success ? [...(previous.reviewDates || [])] : [];
   const last = reviewDates.at(-1) || previous.completedAt;
-  if (result.review && success && last && now - Date.parse(last) >= 86400000) reviewDates.push(new Date(now).toISOString());
-  return { ...previous, completed: previous.completed || (result.checkpoint ? success : true),
-    completedAt: previous.completedAt || new Date(now).toISOString(), bestScore: Math.max(previous.bestScore || 0, result.score),
+  const delayed = result.review && success && previous.completed && last && now - Date.parse(last) >= 86400000;
+  const reviews = delayed ? Math.min((previous.reviews || 0) + 1, 4) : success ? previous.reviews || 0 : 0;
+  if (delayed) reviewDates.push(new Date(now).toISOString());
+  const completed = previous.completed || (result.checkpoint ? success : true);
+  const dueAt = previous.completed && success && !delayed && previous.dueAt ? previous.dueAt : new Date(now + days[reviews] * 86400000).toISOString();
+  return { ...previous, completed,
+    completedAt: previous.completedAt || (completed ? new Date(now).toISOString() : null), bestScore: Math.max(previous.bestScore || 0, result.score),
     attempts: (previous.attempts || 0) + 1, reviews, reviewDates,
-    mastered: Boolean(previous.mastered || reviewDates.length >= 2),
-    lastScore: result.score, assisted: result.assisted, dueAt: new Date(now + days[reviews] * 86400000).toISOString() };
+    mastered: Boolean(previous.mastered || (completed && reviewDates.length >= 2)),
+    lastScore: result.score, assisted: result.assisted, dueAt };
 }

@@ -25,6 +25,8 @@ test('reviews become due after a day and instant retries do not grant mastery', 
   assert.equal(dueReviews({ [lessons[0].id]: progress }, now + 86400000).length, 1);
   progress = recordResult(progress, { ...result, review: true }, now + 1000);
   assert.equal(progress.mastered, false);
+  assert.equal(progress.dueAt, new Date(now + 86400000).toISOString());
+  assert.equal(progress.reviews, 0);
   progress = recordResult(progress, { ...result, review: true }, now + 86400000);
   progress = recordResult(progress, { ...result, review: true }, now + 2 * 86400000);
   assert.equal(progress.mastered, true);

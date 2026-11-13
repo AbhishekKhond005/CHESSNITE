@@ -5,5 +5,5 @@ export default defineConfig({
   root: 'web',
   publicDir: '../engine',
   build: { outDir: 'build', emptyOutDir: true },
-  server: { proxy: { '/api': 'http://127.0.0.1:8765', '/skins': 'http://127.0.0.1:8765' } },
+  server: { proxy: { '/api': { target: 'http://127.0.0.1:8765', changeOrigin: true }, '/skins': { target: 'http://127.0.0.1:8765', changeOrigin: true } } },
 });

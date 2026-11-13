@@ -12,6 +12,21 @@ Milestone 1: course/rules checks and SQLite persistence/concurrency tests pass; 
 
 Milestone 2: real Stockfish WASM play passes browser checks for both colors, game resume, undo, lesson resume/completion, saved skins, and a 390px mobile viewport. The five course/engine unit checks and two storage tests also pass. Standalone launch/update is next.
 
+Milestone 3: double-click launcher, in-app fast-forward update/restart, imported board textures, complete backups, shipped engine source/license notices, and offline browser verification. A real process restart was checked against unchanged SQLite state; a second launch reuses the running instance.
+
+Final verification: 5 course/engine checks, 5 storage/updater checks, all 30 existing importer checks, and 12 browser scenarios passed. The browser scenarios include checkpoint pass vs assisted non-pass, full-game engine replies for both sides, offline London-position play, undo during thinking, backup restore, mobile layout, and persistent skins/progress. Desktop and mobile screens were inspected.
+
+## Open and update the app
+
+- Double-click `Open CHESSNITE.cmd`. It opens `http://127.0.0.1:8765` in your browser. The local service stays available until Windows closes or the process is stopped; opening the launcher again reuses it.
+- No IDE, npm install, or development server is needed to use this checkout's shipped build. Python 3.10+ and a current browser are required. Internet is not needed for lessons, skins, or the bundled bot.
+- Use **Settings → App updates → Update from GitHub**. If an update is downloaded, choose **Restart to finish**. Git and an internet connection are needed for this action. Updates only fast-forward `main` from the configured repository and refuse to overwrite tracked source edits.
+- Progress lives in `.local/chessnite.sqlite3`, separate from tracked source. Export/restore backups from Settings. An unfinished lesson and the current game resume automatically. Changes from stale browser tabs are rejected rather than overwriting newer data.
+- Import more skins with the existing `Open Skin Importer.cmd`, then reload CHESSNITE's Appearance page to pick them. Board image framing can be adjusted with Trim outer frame. The localhost address is for this computer, not public hosting or multi-device sync.
+- To develop: `npm.cmd ci`, `npm.cmd run build`, `python app/server.py`. Run `npm.cmd test`, `python -m unittest discover -s app/tests -v`, and `npm.cmd run test:browser` for the app checks. Browser tests use a separate database and a system Chrome installation on this machine; other environments can use Playwright's installed Chromium.
+
+Launch limitations: one authored White-side course, one uncalibrated 1000-target bot, untimed practice, local single-user data, and local-only access. Live puzzle/explorer integrations, multi-course catalogs, cloud accounts, and full repertoire authoring remain on the broader roadmap. The starter checkpoint currently tests move recall across 11 decisions; richer strategic-question checkpoints remain future curriculum work.
+
 Push each verified milestone to `main`. Source changes require Node to build; running a shipped build requires only Python 3.10+ and a current browser. Personal data lives in `.local/chessnite.sqlite3`, is ignored by Git, and survives app updates.
 
 ## Architectural boundaries

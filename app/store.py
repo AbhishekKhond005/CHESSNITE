@@ -16,10 +16,16 @@ def validate_state(state):
     for key, kind in (("progress", dict), ("sessions", list), ("settings", dict)):
         if not isinstance(state.get(key), kind):
             raise ValueError(f"Invalid {key} data.")
+    if not all(isinstance(value, dict) for value in state['progress'].values()):
+        raise ValueError('Invalid lesson progress.')
+    if not all(isinstance(item, dict) and all(isinstance(item.get(key), str) for key in ('id', 'title', 'date')) for item in state['sessions']):
+        raise ValueError('Invalid session history.')
     if len(state["sessions"]) > 5000 or len(json.dumps(state)) > 1_000_000:
         raise ValueError("This backup exceeds the storage limit.")
     if state.get("game") is not None and not isinstance(state["game"], dict):
         raise ValueError("Invalid saved game.")
+    if state.get('game') is not None and not isinstance(state['game'].get('pgn'), str):
+        raise ValueError('Invalid game notation.')
     return state
 
 

@@ -26,7 +26,7 @@ export default function Board({ game, onMove, pack, palette = 'sage', flipped = 
     if (selected && legal.some(item => item.to === square)) return move(selected, square);
     setSelected(piece?.color === game.turn() ? square : null);
   }
-  return <div className="board-shell"><div className="chessboard" role="group" aria-label="Chess board" style={{ '--light-square': colors.light, '--dark-square': colors.dark }}>
+  return <div className="board-shell"><div className={`chessboard ${pack?.textureUrl ? 'textured' : ''}`} role="group" aria-label="Chess board" style={{ '--light-square': colors.light, '--dark-square': colors.dark, ...(pack?.textureUrl ? { backgroundImage: `url("${pack.textureUrl}")`, backgroundSize: `${100 / (1 - Math.max(0, Math.min(10, pack.textureCrop)) * .02)}%`, backgroundPosition: 'center' } : {}) }}>
     {ranks.flatMap((rank, row) => files.map((file, col) => {
       const square = file + rank, piece = game.get(square), code = piece ? piece.color + piece.type : null;
       const asset = code && pack?.pieces?.[code], available = legal.some(item => item.to === square);

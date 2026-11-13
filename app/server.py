@@ -1,12 +1,17 @@
 """Loopback-only application host. No IDE or Node runtime is needed to use a build."""
 import json
 import mimetypes
+import os
 import secrets
+import subprocess
+import sys
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 from store import Conflict, Store
+from updater import Updater
 
 ROOT = Path(__file__).resolve().parent.parent
 PORT = 8765
@@ -19,7 +24,9 @@ class AppServer(ThreadingHTTPServer):
     def __init__(self, port=PORT, data_path=None):
         super().__init__(("127.0.0.1", port), Handler)
         self.key = secrets.token_urlsafe(32)
+        self.boot_id = secrets.token_hex(8)
         self.store = Store(data_path or ROOT / ".local" / "chessnite.sqlite3")
+        self.updater = Updater(ROOT)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -44,7 +51,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.respond(403, {"error": "Use the local CHESSNITE address."})
         path = unquote(urlsplit(self.path).path)
         if path == "/api/health":
-            return self.respond(200, {"app": "chessnite", "version": "0.1.0"})
+            return self.respond(200, {"app": "chessnite", "version": "0.1.0", "bootId": self.server.boot_id, "pid": os.getpid()})
+        if path == "/api/update":
+            return self.respond(200, self.server.updater.read())
         if path == "/api/state":
             return self.respond(200, {**self.server.store.read(), "key": self.server.key})
         if path == "/api/skins":
@@ -87,6 +96,21 @@ class Handler(BaseHTTPRequestHandler):
             if length < 1 or length > 1_100_000:
                 return self.respond(413, {"error": "Request is too large or empty."})
             body = json.loads(self.rfile.read(length))
+            if self.path == "/api/update":
+                return self.respond(202, self.server.updater.start())
+            if self.path == "/api/quit":
+                self.respond(200, {"stopped": True})
+                threading.Timer(.2, self.server.shutdown).start()
+                return
+            if self.path == "/api/restart":
+                if self.server.server_port != PORT:
+                    return self.respond(400, {"error": "Restart is only available in the personal app instance."})
+                subprocess.Popen([sys.executable, str(ROOT / 'app/launcher.py'), '--wait', '--no-browser'],
+                                 creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0,
+                                 stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                self.respond(200, {"restarting": True, "bootId": self.server.boot_id})
+                threading.Timer(.3, self.server.shutdown).start()
+                return
             if self.path == "/api/state":
                 revision = self.server.store.save(body["state"], body["revision"])
                 return self.respond(200, {"revision": revision})
@@ -103,4 +127,8 @@ if __name__ == "__main__":
     parser.add_argument('--port', type=int, default=PORT)
     parser.add_argument('--data-path')
     args = parser.parse_args()
-    AppServer(args.port, args.data_path).serve_forever()
+    server = AppServer(args.port, args.data_path)
+    try:
+        server.serve_forever()
+    finally:
+        server.server_close()
