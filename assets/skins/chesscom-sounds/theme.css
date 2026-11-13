@@ -1,0 +1,40 @@
+/* CHESSNITE theme: all asset paths are local to this file. */
+:root {
+  --theme-sound-set-mp3-event-end: url('./sounds/event-end.mp3');
+  --theme-sound-set-mp3-notify: url('./sounds/notify.mp3');
+  --theme-sound-set-mp3-game-start: url('./sounds/game-start.mp3');
+  --theme-sound-set-mp3-move-check: url('./sounds/move-check.mp3');
+  --theme-sound-set-mp3-puzzle-correct: url('./sounds/puzzle-correct.mp3');
+  --theme-sound-set-mp3-click: url('./sounds/click.mp3');
+  --theme-sound-set-mp3-move-self: url('./sounds/move-self.mp3');
+  --theme-sound-set-mp3-promote: url('./sounds/promote.mp3');
+  --theme-sound-set-mp3-move-self-check: url('./sounds/move-self-check.mp3');
+  --theme-sound-set-mp3-scatter: url('./sounds/scatter.mp3');
+  --theme-sound-set-mp3-event-warning: url('./sounds/event-warning.mp3');
+  --theme-sound-set-mp3-illegal: url('./sounds/illegal.mp3');
+  --theme-sound-set-mp3-boom: url('./sounds/boom.mp3');
+  --theme-sound-set-mp3-tenseconds: url('./sounds/tenseconds.mp3');
+  --theme-sound-set-mp3-correct: url('./sounds/correct.mp3');
+  --theme-sound-set-mp3-castle: url('./sounds/castle.mp3');
+  --theme-sound-set-mp3-lesson-fail: url('./sounds/lesson-fail.mp3');
+  --theme-sound-set-mp3-move-opponent-check: url('./sounds/move-opponent-check.mp3');
+  --theme-sound-set-mp3-_archive: url('./archives/mp3-archive.zip');
+  --theme-sound-set-mp3-decline: url('./sounds/decline.mp3');
+  --theme-sound-set-mp3-incorrect: url('./sounds/incorrect.mp3');
+  --theme-sound-set-mp3-premove: url('./sounds/premove.mp3');
+  --theme-sound-set-mp3-game-lose: url('./sounds/game-lose.mp3');
+  --theme-sound-set-mp3-achievement: url('./sounds/achievement.mp3');
+  --theme-sound-set-mp3-event-start: url('./sounds/event-start.mp3');
+  --theme-sound-set-mp3-move-opponent: url('./sounds/move-opponent.mp3');
+  --theme-sound-set-mp3-game-draw: url('./sounds/game-draw.mp3');
+  --theme-sound-set-mp3-capture: url('./sounds/capture.mp3');
+  --theme-sound-set-mp3-game-end: url('./sounds/game-end.mp3');
+  --theme-sound-set-mp3-shoutout: url('./sounds/shoutout.mp3');
+  --theme-sound-set-mp3-game-lose-long: url('./sounds/game-lose-long.mp3');
+  --theme-sound-set-mp3-game-win-long: url('./sounds/game-win-long.mp3');
+  --theme-sound-set-mp3-puzzle-correct-2: url('./sounds/puzzle-correct-2.mp3');
+  --theme-sound-set-mp3-notification: url('./sounds/notification.mp3');
+  --theme-sound-set-mp3-puzzle-wrong: url('./sounds/puzzle-wrong.mp3');
+  --theme-sound-set-mp3-draw-offer: url('./sounds/draw-offer.mp3');
+  --theme-sound-set-mp3-lesson_pass: url('./sounds/lesson_pass.mp3');
+}

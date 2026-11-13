@@ -1,0 +1,134 @@
+{
+  "schema_version": 2,
+  "id": "neo-wood",
+  "name": "NEO WOOD",
+  "imported_at": "2026-11-13T10:21:46.520234+00:00",
+  "piece_perspective": 1.0,
+  "complete_piece_set": true,
+  "missing_pieces": [],
+  "pieces": {
+    "wp": {
+      "path": "pieces/wp.png",
+      "css_property": "--theme-piece-set-wp",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wp.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wp.png",
+      "media_type": "image/png",
+      "bytes": 2330,
+      "sha256": "8c2ab78cc11a655204c8d6fc30d9bd3f9964612cc9d71341a2ffe3c8b31df469"
+    },
+    "wn": {
+      "path": "pieces/wn.png",
+      "css_property": "--theme-piece-set-wn",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wn.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wn.png",
+      "media_type": "image/png",
+      "bytes": 3674,
+      "sha256": "0b79c623cbcca5ef3bf4f8ad03d1b4a339b7cd4c97c17e622de8856108b54b7e"
+    },
+    "wr": {
+      "path": "pieces/wr.png",
+      "css_property": "--theme-piece-set-wr",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wr.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wr.png",
+      "media_type": "image/png",
+      "bytes": 2884,
+      "sha256": "db58223262ebfd9815e0ced6ad15a653d08664f45286ab0b9911d7f53dd75999"
+    },
+    "wb": {
+      "path": "pieces/wb.png",
+      "css_property": "--theme-piece-set-wb",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wb.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wb.png",
+      "media_type": "image/png",
+      "bytes": 3203,
+      "sha256": "70ab0ea058e041c04032fa4eca11cdc920d87bb470196017f8fbf7e66ac23823"
+    },
+    "wq": {
+      "path": "pieces/wq.png",
+      "css_property": "--theme-piece-set-wq",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wq.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wq.png",
+      "media_type": "image/png",
+      "bytes": 4503,
+      "sha256": "6643336a93f39d42a22db03785b9d377ecce4fbc71d05fcb53f09c7bcf8e4828"
+    },
+    "wk": {
+      "path": "pieces/wk.png",
+      "css_property": "--theme-piece-set-wk",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wk.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/wk.png",
+      "media_type": "image/png",
+      "bytes": 3962,
+      "sha256": "60107a4ccb99a506895438391218ead5622af1ef180161a8e565e69176de72e0"
+    },
+    "bp": {
+      "path": "pieces/bp.png",
+      "css_property": "--theme-piece-set-bp",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bp.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bp.png",
+      "media_type": "image/png",
+      "bytes": 2080,
+      "sha256": "5f7ebbcb711b39605cac616851f0b411399046bbc496294c37bcea74c10170b4"
+    },
+    "bn": {
+      "path": "pieces/bn.png",
+      "css_property": "--theme-piece-set-bn",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bn.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bn.png",
+      "media_type": "image/png",
+      "bytes": 3098,
+      "sha256": "7a30a2ac61d6f23975f1c3dc5d483f524ac4796f340c6840980efa941c420e37"
+    },
+    "bb": {
+      "path": "pieces/bb.png",
+      "css_property": "--theme-piece-set-bb",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bb.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bb.png",
+      "media_type": "image/png",
+      "bytes": 2733,
+      "sha256": "ca540ba7521437812009a7c599b048cf8c65125305eb378d0a593d715a1aacd6"
+    },
+    "br": {
+      "path": "pieces/br.png",
+      "css_property": "--theme-piece-set-br",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/br.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/br.png",
+      "media_type": "image/png",
+      "bytes": 2504,
+      "sha256": "468adf733668673052ee7eb1e5743d618e70cc8cffc1b36b27321586bc2ff336"
+    },
+    "bq": {
+      "path": "pieces/bq.png",
+      "css_property": "--theme-piece-set-bq",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bq.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bq.png",
+      "media_type": "image/png",
+      "bytes": 3386,
+      "sha256": "1a1fb9a572735bc5acbab21080370fa397211ff9aec3cd2130d7132ef9b3b519"
+    },
+    "bk": {
+      "path": "pieces/bk.png",
+      "css_property": "--theme-piece-set-bk",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bk.png",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/pieces/neo_wood/150/bk.png",
+      "media_type": "image/png",
+      "bytes": 3534,
+      "sha256": "47455f18718c8fdfe3d58ffbd69b1341f6a995a1d71945f18d4a562c615fc334"
+    }
+  },
+  "boards": {
+    "board-3d-board": {
+      "path": "boards/board-3d-board.jpg",
+      "css_property": "--theme-board-style-image-3d-board",
+      "source_url": "https://images.chesscomfiles.com/chess-themes/boards_3d/board_marble.jpg",
+      "resolved_url": "https://images.chesscomfiles.com/chess-themes/boards_3d/board_marble.jpg",
+      "media_type": "image/jpeg",
+      "bytes": 131748,
+      "sha256": "575c8feff59c42cb6723bba0cfe55381445b1f503b7748abc763942d30ab2ee7"
+    }
+  },
+  "sounds": {},
+  "archives": {},
+  "complete_import": true,
+  "failed_assets": []
+}

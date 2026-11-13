@@ -1,0 +1,134 @@
+{
+  "schema_version": 2,
+  "id": "grand-chess-auto",
+  "name": "GRAND CHESS AUTO",
+  "imported_at": "2026-11-13T10:19:11.805166+00:00",
+  "piece_perspective": 1.0,
+  "complete_piece_set": true,
+  "missing_pieces": [],
+  "pieces": {
+    "wp": {
+      "path": "pieces/wp.png",
+      "css_property": "--theme-piece-set-wp",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/wp.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/wp.png",
+      "media_type": "image/png",
+      "bytes": 9484,
+      "sha256": "42d47c1e63c88b2bc3583c4479c52dfa36cce23db48d1c285b9e76e8143b276e"
+    },
+    "wn": {
+      "path": "pieces/wn.png",
+      "css_property": "--theme-piece-set-wn",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/wn.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/wn.png",
+      "media_type": "image/png",
+      "bytes": 13799,
+      "sha256": "9df4368eb7e505d3e4668de0c0befab9d1cbd47d5d6e4c36e920853c8947d549"
+    },
+    "wr": {
+      "path": "pieces/wr.png",
+      "css_property": "--theme-piece-set-wr",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/wr.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/wr.png",
+      "media_type": "image/png",
+      "bytes": 12053,
+      "sha256": "cdffd1d3267d9fd41b6e3cc2433b98aa2cf1cb5422c4c143f822bc84d3a6ef20"
+    },
+    "wb": {
+      "path": "pieces/wb.png",
+      "css_property": "--theme-piece-set-wb",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/wb.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/wb.png",
+      "media_type": "image/png",
+      "bytes": 15454,
+      "sha256": "af06edf266b3585c2e83ee89fa19923b176b597dab59165c6a757373481da5a4"
+    },
+    "wq": {
+      "path": "pieces/wq.png",
+      "css_property": "--theme-piece-set-wq",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/wq.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/wq.png",
+      "media_type": "image/png",
+      "bytes": 19609,
+      "sha256": "738ce8a2899dcae4785c3fdf7b2c03d82d7ffbb1946163cdcccb32d4c4753f2b"
+    },
+    "wk": {
+      "path": "pieces/wk.png",
+      "css_property": "--theme-piece-set-wk",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/wk.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/wk.png",
+      "media_type": "image/png",
+      "bytes": 18593,
+      "sha256": "d75c3ffa39d11baa8bc76294e0b7186b691d38fa1793cc417ee303eb75112a49"
+    },
+    "bp": {
+      "path": "pieces/bp.png",
+      "css_property": "--theme-piece-set-bp",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/bp.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/bp.png",
+      "media_type": "image/png",
+      "bytes": 10655,
+      "sha256": "a248a281a9154f8a3391edda971dd9c4f2e765badfb5de1959c3aa9cd8cd566b"
+    },
+    "bn": {
+      "path": "pieces/bn.png",
+      "css_property": "--theme-piece-set-bn",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/bn.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/bn.png",
+      "media_type": "image/png",
+      "bytes": 16981,
+      "sha256": "e90176165a4fa662e68fa6cd86bedb524e05b24649163670f3c2942390fdb7e9"
+    },
+    "bb": {
+      "path": "pieces/bb.png",
+      "css_property": "--theme-piece-set-bb",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/bb.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/bb.png",
+      "media_type": "image/png",
+      "bytes": 13510,
+      "sha256": "d4dc18cd33e6fcf40e4f8b6d3e3dbab5a8245f6d3669f59a3b5aa882a7d4bc7e"
+    },
+    "br": {
+      "path": "pieces/br.png",
+      "css_property": "--theme-piece-set-br",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/br.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/br.png",
+      "media_type": "image/png",
+      "bytes": 13213,
+      "sha256": "44ed80647c724287e730a211860150d15721cc593bf41fe68c5a3dd054e756e6"
+    },
+    "bq": {
+      "path": "pieces/bq.png",
+      "css_property": "--theme-piece-set-bq",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/bq.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/bq.png",
+      "media_type": "image/png",
+      "bytes": 17618,
+      "sha256": "d8f5bd9747da14bb067581c64a3848c4052de0df2334948dd972dbe1e373dc9e"
+    },
+    "bk": {
+      "path": "pieces/bk.png",
+      "css_property": "--theme-piece-set-bk",
+      "source_url": "https://assets-themes.chess.com/image/nw662/150/bk.png",
+      "resolved_url": "https://assets-themes.chess.com/image/nw662/150/bk.png",
+      "media_type": "image/png",
+      "bytes": 25697,
+      "sha256": "3483cc7e09b8b241aca1d031c06ff5646d38a25f86dc748fc7a48e6b4e2d508e"
+    }
+  },
+  "boards": {
+    "board-3d-board": {
+      "path": "boards/board-3d-board.png",
+      "css_property": "--theme-board-style-image-3d-board",
+      "source_url": "https://assets-themes.chess.com/image/ud02b/3dboard.png",
+      "resolved_url": "https://assets-themes.chess.com/image/ud02b/3dboard.png",
+      "media_type": "image/png",
+      "bytes": 175025,
+      "sha256": "8fa61890de53b81291c40db3eb28dd914f3f42727d1a48140d17d4c558cfe5c5"
+    }
+  },
+  "sounds": {},
+  "archives": {},
+  "complete_import": true,
+  "failed_assets": []
+}

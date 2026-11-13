@@ -1,0 +1,15 @@
+:root {
+    --theme-piece-set-perspective:1;
+    --theme-piece-set-wp: url('https://assets-themes.chess.com/image/uqihi/150/wp.png');
+    --theme-piece-set-wn: url('https://assets-themes.chess.com/image/uqihi/150/wn.png');
+    --theme-piece-set-wr: url('https://assets-themes.chess.com/image/uqihi/150/wr.png');
+    --theme-piece-set-wb: url('https://assets-themes.chess.com/image/uqihi/150/wb.png');
+    --theme-piece-set-wq: url('https://assets-themes.chess.com/image/uqihi/150/wq.png');
+    --theme-piece-set-wk: url('https://assets-themes.chess.com/image/uqihi/150/wk.png');
+    --theme-piece-set-bp: url('https://assets-themes.chess.com/image/uqihi/150/bp.png');
+    --theme-piece-set-bn: url('https://assets-themes.chess.com/image/uqihi/150/bn.png');
+    --theme-piece-set-bb: url('https://assets-themes.chess.com/image/uqihi/150/bb.png');
+    --theme-piece-set-br: url('https://assets-themes.chess.com/image/uqihi/150/br.png');
+    --theme-piece-set-bq: url('https://assets-themes.chess.com/image/uqihi/150/bq.png');
+    --theme-piece-set-bk: url('https://assets-themes.chess.com/image/uqihi/150/bk.png');
+}

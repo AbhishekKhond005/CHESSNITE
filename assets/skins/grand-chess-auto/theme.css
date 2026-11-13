@@ -1,0 +1,17 @@
+/* CHESSNITE theme: all asset paths are local to this file. */
+:root {
+  --theme-piece-set-perspective: 1;
+  --theme-piece-set-wp: url('./pieces/wp.png');
+  --theme-piece-set-wn: url('./pieces/wn.png');
+  --theme-piece-set-wr: url('./pieces/wr.png');
+  --theme-piece-set-wb: url('./pieces/wb.png');
+  --theme-piece-set-wq: url('./pieces/wq.png');
+  --theme-piece-set-wk: url('./pieces/wk.png');
+  --theme-piece-set-bp: url('./pieces/bp.png');
+  --theme-piece-set-bn: url('./pieces/bn.png');
+  --theme-piece-set-bb: url('./pieces/bb.png');
+  --theme-piece-set-br: url('./pieces/br.png');
+  --theme-piece-set-bq: url('./pieces/bq.png');
+  --theme-piece-set-bk: url('./pieces/bk.png');
+  --theme-board-style-image-3d-board: url('./boards/board-3d-board.png');
+}
